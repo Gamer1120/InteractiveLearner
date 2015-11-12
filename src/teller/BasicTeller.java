@@ -2,11 +2,11 @@ package teller;
 
 import fileparser.Joke;
 
-public class DummyTeller implements Teller {
+public class BasicTeller implements Teller{
 
 	@Override
 	public void tellJoke(Joke joke) {
-
+		System.out.println(joke.getJoke());
 	}
 
 	@Override

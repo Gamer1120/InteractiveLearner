@@ -4,9 +4,6 @@ import fileparser.Joke;
 
 import java.util.HashMap;
 
-/**
- * Created by Michael on 10-11-2015.
- */
 public interface Classifier {
 
 	/**
