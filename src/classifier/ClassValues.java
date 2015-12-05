@@ -17,19 +17,17 @@ public class ClassValues {
         individualWordCount = new HashMap<>();
     }
 
-    public void addDocuments(int amount) {
-        documentCount += amount;
+    public void addDocument() {
+        ++documentCount;
     }
 
-    public void addWords(String... words) {
-        totalWordCount += words.length;
-        for (String word : words) {
-            MutableInt count = individualWordCount.get(word);
-            if (count == null) {
-                individualWordCount.put(word, new MutableInt());
-            } else {
-                count.increment();
-            }
+    public void addWord(String word) {
+        ++totalWordCount;
+        MutableInt count = individualWordCount.get(word);
+        if (count == null) {
+            individualWordCount.put(word, new MutableInt());
+        } else {
+            count.increment();
         }
     }
 
