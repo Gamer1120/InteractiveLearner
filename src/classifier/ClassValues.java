@@ -42,6 +42,7 @@ public class ClassValues {
     }
 
     public int getIndividualWordCount(String word) {
-        return individualWordCount.get(word).toInt();
+        MutableInt count = individualWordCount.get(word);
+        return count == null ? 0 : count.toInt();
     }
 }
