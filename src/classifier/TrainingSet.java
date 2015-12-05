@@ -2,10 +2,7 @@ package classifier;
 
 import fileparser.Document;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class TrainingSet {
     // Total amount of documents
@@ -41,27 +38,23 @@ public class TrainingSet {
         }
     }
 
-    public boolean inVocabulary(String word) {
-        return vocabulary.contains(word);
+    public void addAll(Collection<Document> documents) {
+        documents.forEach(this::add);
     }
 
     public int getDocumentCount() {
         return documentCount;
     }
 
-    public int getClassDocumentCount(String c) {
-        return classes.get(c).getDocumentCount();
+    public boolean inVocabulary(String word) {
+        return vocabulary.contains(word);
     }
 
-    public int getUniqueWordCount() {
+    public int getVocabularySize() {
         return vocabulary.size();
     }
 
-    public int getClassTotalWordCount(String c) {
-        return classes.get(c).getTotalWordCount();
-    }
-
-    public int getClassIndividualWordCount(String c, String word) {
-        return classes.get(c).getIndividualWordCount(word);
+    public Map<String, ClassValues> getClasses() {
+        return classes;
     }
 }
