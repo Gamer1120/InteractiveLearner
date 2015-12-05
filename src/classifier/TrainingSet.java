@@ -13,12 +13,12 @@ public class TrainingSet {
     // Map of classes and their values
     private Map<String, ClassValues> classes;
     // All unique words
-    private Set<String> words;
+    private Set<String> vocabulary;
 
     public TrainingSet() {
         documentCount = 0;
         classes = new HashMap<>();
-        words = new HashSet<>();
+        vocabulary = new HashSet<>();
     }
 
     public void add(Document document) {
@@ -30,32 +30,38 @@ public class TrainingSet {
         }
         classValues.addDocument();
         for (String word : document.getText()) {
-            words.add(word);
+            vocabulary.add(word);
             classValues.addWord(word);
         }
+    }
+
+    public void addAll(Document... documents) {
+        for (Document document : documents) {
+            add(document);
+        }
+    }
+
+    public boolean inVocabulary(String word) {
+        return vocabulary.contains(word);
     }
 
     public int getDocumentCount() {
         return documentCount;
     }
 
-    public int getDocumentCount(String c) {
+    public int getClassDocumentCount(String c) {
         return classes.get(c).getDocumentCount();
     }
 
-    public int getWordCount() {
-        return words.size();
+    public int getUniqueWordCount() {
+        return vocabulary.size();
     }
 
-    public int getWordCount(String c) {
+    public int getClassTotalWordCount(String c) {
         return classes.get(c).getTotalWordCount();
     }
 
-    public int getWordCount(String c, String word) {
+    public int getClassIndividualWordCount(String c, String word) {
         return classes.get(c).getIndividualWordCount(word);
-    }
-
-    public double getPriority(String c) {
-        return (double) getDocumentCount(c) / (double) getDocumentCount();
     }
 }
