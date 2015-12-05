@@ -1,33 +1,31 @@
 package fileparser;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.Normalizer;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
-/**
- * Created by Michael on 5-12-2015.
- */
 public class FileUtils {
 
     private static final String ENCODING = "UTF-8";
 
-    public static LinkedList<Document> readFolder(String path, String classification) {
-        LinkedList<Document> result = new LinkedList<>();
-        try {
-            Files.walk(Paths.get(path)).forEach(filePath -> {
-                if (Files.isRegularFile(filePath)) {
-                    result.add(new Document(tokenizer(fileToString(filePath.toString())), classification));
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static ArrayList<Document> readFolder(String path, String classification, int startIndex) {
+        return readFolder(path, classification, startIndex, new File(path).listFiles().length - startIndex);
+    }
+
+    public static ArrayList<Document> readFolder(String path, String classification, int startIndex, int amount) {
+        ArrayList<Document> result = new ArrayList<>();
+        File[] directoryListing = new File(path).listFiles();
+        for (int i = startIndex; i < (startIndex + amount) && i < directoryListing.length; i++){
+            File currentFile = directoryListing[i];
+            result.add(new Document(tokenizer(fileToString(currentFile.getPath())), classification));
         }
         return result;
     }
+
 
     public static String fileToString(String path) {
         byte[] encoded = new byte[0];

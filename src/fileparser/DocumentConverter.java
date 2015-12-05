@@ -1,6 +1,7 @@
 package fileparser;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -8,8 +9,8 @@ public interface DocumentConverter {
 
 	public void readDocuments();
 
-	public LinkedList<Document> getTrainingSet();
+	public ArrayList<Document> getTrainingSet();
 
-	public LinkedList<Document> getTestSet();
+	public ArrayList<Document> getTestSet();
 
 }
