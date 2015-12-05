@@ -3,10 +3,10 @@ package fileparser;
 import java.io.File;
 import java.util.HashMap;
 
-public interface DatabaseReader {
+public interface DocumentConverter {
 
 	public void readJokes(File file);
 
-	public HashMap<Joke, Integer> getJokes();
+	public HashMap<Document, Integer> getJokes();
 
 }
