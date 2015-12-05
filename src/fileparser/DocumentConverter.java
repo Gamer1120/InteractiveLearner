@@ -5,8 +5,8 @@ import java.util.HashMap;
 
 public interface DocumentConverter {
 
-	public void readJokes(File file);
+	public void readDocuments();
 
-	public HashMap<Document, Integer> getJokes();
+	public HashMap<Document, Integer> getDocuments();
 
 }

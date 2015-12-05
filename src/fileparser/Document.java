@@ -2,19 +2,19 @@ package fileparser;
 
 public class Document {
 
-	private String joke;
-	private int classification;
+	private String text;
+	private String classification;
 
-	public Document(String joke, int classification){
-		this.joke = joke;
+	public Document(String text, String classification){
+		this.text = text;
 		this.classification = classification;
 	}
 
-	public String getJoke(){
-		return joke;
+	public String getText(){
+		return text;
 	}
 
-	public int getClassification(){
+	public String getClassification(){
 		return classification;
 	}
 
