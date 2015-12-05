@@ -23,6 +23,39 @@ public class TrainingSet {
 
     public void add(Document document) {
         ++documentCount;
-        //FIXME
+        ClassValues classValues = classes.get(document.getClassification());
+        if (classValues == null) {
+            classValues = new ClassValues();
+            classes.put(document.getClassification(), classValues);
+        }
+        classValues.addDocument();
+        for (String word : document.getText()) {
+            words.add(word);
+            classValues.addWord(word);
+        }
+    }
+
+    public int getDocumentCount() {
+        return documentCount;
+    }
+
+    public int getDocumentCount(String c) {
+        return classes.get(c).getDocumentCount();
+    }
+
+    public int getWordCount() {
+        return words.size();
+    }
+
+    public int getWordCount(String c) {
+        return classes.get(c).getTotalWordCount();
+    }
+
+    public int getWordCount(String c, String word) {
+        return classes.get(c).getIndividualWordCount(word);
+    }
+
+    public double getPriority(String c) {
+        return (double) getDocumentCount(c) / (double) getDocumentCount();
     }
 }
