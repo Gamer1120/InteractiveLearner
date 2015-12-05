@@ -1,5 +1,7 @@
 package classifier;
 
+import utils.MutableInt;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,17 +43,5 @@ public class ClassValues {
 
     public int getIndividualWordCount(String word) {
         return individualWordCount.get(word).toInt();
-    }
-
-    class MutableInt {
-        int value = 1; // note that we start at 1 since we're counting
-
-        public void increment() {
-            ++value;
-        }
-
-        public int toInt() {
-            return value;
-        }
     }
 }
