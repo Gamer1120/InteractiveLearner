@@ -1,18 +1,13 @@
 package fileparser;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 
 public class EmailConverter implements DocumentConverter {
 
-    private static final String ENCODING = "UTF-8";
 
-    private List<Document> documents;
+    private LinkedList<Document> trainingSet;
+    private LinkedList<Document> testSet;
 
     public static void main(String[] args) {
         new EmailConverter().readDocuments();
@@ -20,38 +15,29 @@ public class EmailConverter implements DocumentConverter {
 
     @Override
     public void readDocuments() {
-        this.documents = new LinkedList<>();
-        try {
-            Files.walk(Paths.get("db/emails/ham")).forEach(filePath -> {
-                if (Files.isRegularFile(filePath)) {
-                    System.out.println("START OF FILE");
-                    System.out.println(fileToString(filePath.toString()));
-                    System.out.println("END OF FILE");
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public String fileToString(String path) {
-        byte[] encoded = new byte[0];
-        try {
-            encoded = Files.readAllBytes(Paths.get(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            return new String(encoded, ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return null;
+        long startTime = System.nanoTime();
+        this.trainingSet = new LinkedList<>();
+        this.testSet = new LinkedList<>();
+        trainingSet.addAll(FileUtils.readFolder("db/emails/training/ham", "ham"));
+        trainingSet.addAll(FileUtils.readFolder("db/emails/training/spam", "spam"));
+        testSet.addAll(FileUtils.readFolder("db/emails/test", null));
+        long endTime = System.nanoTime();
+        double duration = Math.round((endTime - startTime) / 1000000000 * 100.0) / 100.0;
+        System.out.println("Successfully read " + trainingSet.size() + " training emails and " + testSet.size() + " test emails in " + duration + " seconds.");
+        /*
+        System.out.println("Examples: ");
+        System.out.println("Training: " + Arrays.toString(trainingSet.get(0).getText()));
+        System.out.println("Test: " + Arrays.toString(testSet.get(0).getText()));
+        */
     }
 
     @Override
-    public HashMap<Document, Integer> getDocuments() {
-        return null;
+    public LinkedList<Document> getTrainingSet() {
+        return trainingSet;
+    }
+
+    @Override
+    public LinkedList<Document> getTestSet() {
+        return testSet;
     }
 }
