@@ -1,5 +1,7 @@
 package fileparser;
 
+import classifier.TrainingSet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -14,7 +16,7 @@ public class BlogConverter implements DocumentConverter {
     private static final int MALETRAININGAMOUNT = 162;
     private static final int FEMALETRAININGAMOUNT = 162;
 
-    private ArrayList<Document> trainingSet;
+    private TrainingSet trainingSet;
     private ArrayList<Document> testSet;
 
     public static void main(String[] args) {
@@ -24,7 +26,7 @@ public class BlogConverter implements DocumentConverter {
     @Override
     public void readDocuments() {
         long startTime = System.nanoTime();
-        this.trainingSet = new ArrayList<>();
+        this.trainingSet = new TrainingSet();
         this.testSet = new ArrayList<>();
         trainingSet.addAll(FileUtils.readFolder("db/blogs/F", "female", 0, FEMALETRAININGAMOUNT));
         trainingSet.addAll(FileUtils.readFolder("db/blogs/M", "male", 0, MALETRAININGAMOUNT));
@@ -32,7 +34,7 @@ public class BlogConverter implements DocumentConverter {
         testSet.addAll(FileUtils.readFolder("db/blogs/M", "male", MALETRAININGAMOUNT));
         long endTime = System.nanoTime();
         double duration = Math.round((endTime - startTime) / 1000000000 * 100.0) / 100.0;
-        System.out.println("Successfully read " + trainingSet.size() + " training blogs and " + testSet.size() + " test blogs in " + duration + " seconds.");
+        System.out.println("Successfully read " + trainingSet.getDocumentCount() + " training blogs and " + testSet.size() + " test blogs in " + duration + " seconds.");
         /*
         System.out.println("Examples: ");
         System.out.println("Training: " + Arrays.toString(trainingSet.get(0).getText()));
@@ -41,7 +43,7 @@ public class BlogConverter implements DocumentConverter {
     }
 
     @Override
-    public ArrayList<Document> getTrainingSet() {
+    public TrainingSet getTrainingSet() {
         return trainingSet;
     }
 

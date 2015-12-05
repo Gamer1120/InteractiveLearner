@@ -1,5 +1,7 @@
 package fileparser;
 
+import classifier.TrainingSet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -15,7 +17,7 @@ public class EmailConverter implements DocumentConverter {
     private static final int HAMTRAININGAMOUNT = 1206;
     private static final int SPAMTRAININGAMOUNT = 241;
 
-    private ArrayList<Document> trainingSet;
+    private TrainingSet trainingSet;
     private ArrayList<Document> testSet;
 
     public static void main(String[] args) {
@@ -25,7 +27,7 @@ public class EmailConverter implements DocumentConverter {
     @Override
     public void readDocuments() {
         long startTime = System.nanoTime();
-        this.trainingSet = new ArrayList<>();
+        this.trainingSet = new TrainingSet();
         this.testSet = new ArrayList<>();
         trainingSet.addAll(FileUtils.readFolder("db/emails/ham", "ham", 0, HAMTRAININGAMOUNT));
         trainingSet.addAll(FileUtils.readFolder("db/emails/spam", "spam", 0, SPAMTRAININGAMOUNT));
@@ -33,7 +35,7 @@ public class EmailConverter implements DocumentConverter {
         testSet.addAll(FileUtils.readFolder("db/emails/spam", "spam", SPAMTRAININGAMOUNT));
         long endTime = System.nanoTime();
         double duration = Math.round((endTime - startTime) / 1000000000 * 100.0) / 100.0;
-        System.out.println("Successfully read " + trainingSet.size() + " training emails and " + testSet.size() + " test emails in " + duration + " seconds.");
+        System.out.println("Successfully read " + trainingSet.getDocumentCount() + " training emails and " + testSet.size() + " test emails in " + duration + " seconds.");
         /*
         System.out.println("Examples: ");
         System.out.println("Training: " + Arrays.toString(trainingSet.get(0).getText()));
@@ -42,7 +44,7 @@ public class EmailConverter implements DocumentConverter {
     }
 
     @Override
-    public ArrayList<Document> getTrainingSet() {
+    public TrainingSet getTrainingSet() {
         return trainingSet;
     }
 
