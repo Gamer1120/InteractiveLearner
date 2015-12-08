@@ -10,17 +10,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tester {
-    public static final double TRAINING_PERCENTAGE = 0.50;
+    private Classifier classifier;
+    private List<Document> testDocuments;
+    private double trainingPercentage;
 
-    public static void test(ClassFolder... classFolders) {
-        Classifier classifier = new MultinomialNaiveBayesClassifier();
-        List<Document> testDocuments = new ArrayList<>();
+    public Tester(double trainingPercentage, ClassFolder... classFolders) {
+        this.trainingPercentage = trainingPercentage;
+        classifier = new MultinomialNaiveBayesClassifier();
+        testDocuments = new ArrayList<>();
+        add(classFolders);
+    }
+
+    public void add(ClassFolder... classFolders) {
         for (ClassFolder classFolder : classFolders) {
             List<Document> documents = FileUtils.readDocuments(classFolder);
-            int trainingSetSize = (int) (TRAINING_PERCENTAGE * documents.size());
+            int trainingSetSize = (int) (trainingPercentage * documents.size());
             classifier.addAll(documents.subList(0, trainingSetSize));
             testDocuments.addAll(documents.subList(trainingSetSize, documents.size()));
         }
+    }
+
+    public void test() {
         int correct = 0;
         int incorrect = 0;
         for (Document document : testDocuments) {
