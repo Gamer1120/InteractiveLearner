@@ -54,13 +54,6 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
     }
 
     @Override
-    public void addAll(Document... documents) {
-        for (Document document : documents) {
-            add(document);
-        }
-    }
-
-    @Override
     public void addAll(Collection<Document> documents) {
         documents.forEach(this::add);
     }

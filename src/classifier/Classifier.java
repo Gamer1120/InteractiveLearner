@@ -7,7 +7,5 @@ public interface Classifier {
 
     void add(Document document);
 
-    void addAll(Document... documents);
-
     void addAll(Collection<Document> documents);
 }

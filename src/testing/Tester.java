@@ -3,30 +3,32 @@ package testing;
 import classifier.Classifier;
 import classifier.Document;
 import classifier.MultinomialNaiveBayesClassifier;
-import fileparser.ClassFolder;
-import fileparser.FileUtils;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class Tester {
     private Classifier classifier;
-    private List<Document> testDocuments;
-    private double trainingPercentage;
+    private Collection<Document> testDocuments;
 
-    public Tester(double trainingPercentage, ClassFolder... classFolders) {
-        this.trainingPercentage = trainingPercentage;
+    public Tester() {
         classifier = new MultinomialNaiveBayesClassifier();
         testDocuments = new ArrayList<>();
-        add(classFolders);
     }
 
-    public void add(ClassFolder... classFolders) {
-        for (ClassFolder classFolder : classFolders) {
-            List<Document> documents = FileUtils.readDocuments(classFolder);
-            int trainingSetSize = (int) (trainingPercentage * documents.size());
-            classifier.addAll(documents.subList(0, trainingSetSize));
-            testDocuments.addAll(documents.subList(trainingSetSize, documents.size()));
+    public void add(Document document, boolean training) {
+        if (training) {
+            classifier.add(document);
+        } else {
+            testDocuments.add(document);
+        }
+    }
+
+    public void addAll(Collection<Document> documents, boolean training) {
+        if (training) {
+            classifier.addAll(documents);
+        } else {
+            testDocuments.addAll(documents);
         }
     }
 
