@@ -87,9 +87,9 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
             ++totalWordCount;
             MutableInt count = individualWordCount.get(word);
             if (count == null) {
-                individualWordCount.put(word, new MutableInt());
+                individualWordCount.put(word, new MutableInt(1));
             } else {
-                count.increment();
+                count.add(1);
             }
         }
 
