@@ -10,7 +10,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
     private int documentCount;
     // Map of classes and their values
     private Map<String, ClassValues> classes;
-    // All unique words
+    // Set of all words
     private Set<String> vocabulary;
 
     /**
