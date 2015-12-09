@@ -1,6 +1,6 @@
 package utils;
 
-public class MutableInt {
+public class MutableInt extends Number {
     int value;
 
     public MutableInt(int val) {
@@ -11,7 +11,35 @@ public class MutableInt {
         value += val;
     }
 
-    public int toInt() {
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public int intValue() {
+        return value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public long longValue() {
+        return value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public float floatValue() {
+        return value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public double doubleValue() {
         return value;
     }
 }

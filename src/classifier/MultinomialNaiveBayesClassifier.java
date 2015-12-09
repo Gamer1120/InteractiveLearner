@@ -47,7 +47,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
             }
         }
         // Return the class with the highest score
-        return scores.entrySet().stream().max((entry1, entry2) -> entry1.getValue().toDouble() > entry2.getValue().toDouble() ? 1 : -1).get().getKey();
+        return scores.entrySet().stream().max((entry1, entry2) -> entry1.getValue().doubleValue() > entry2.getValue().doubleValue() ? 1 : -1).get().getKey();
     }
 
     /**
@@ -155,7 +155,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
             // Get the count for the specified word
             MutableInt count = individualWordCount.get(word);
             // Return the count of the word or zero if there is no entry for the word
-            return count == null ? 0 : count.toInt();
+            return count == null ? 0 : count.intValue();
         }
     }
 }
