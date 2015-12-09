@@ -14,6 +14,12 @@ import java.util.List;
 public class FileUtils {
     private static final String ENCODING = "UTF-8";
 
+    /**
+     * Returns all classes in a given ClassFolder as a List of Documents.
+     *
+     * @param classFolder - the ClassFolder the classes are in.
+     * @return all classes in a given ClassFolder as a list of Documents.
+     */
     public static List<Document> readDocuments(ClassFolder classFolder) {
         List<Document> documents = new ArrayList<>();
         File[] directoryListing = new File(classFolder.path).listFiles();
@@ -26,6 +32,12 @@ public class FileUtils {
         return documents;
     }
 
+    /**
+     * Makes a String with the contents of the specified text file.
+     *
+     * @param path the Path to the text file.
+     * @return a String with the contents of the specified text file.
+     */
     public static String fileToString(String path) {
         byte[] encoded = new byte[0];
         try {
@@ -41,6 +53,12 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Tokenizes and normalizes a given String.
+     *
+     * @param line the String to be tokenized and normalized.
+     * @return the tokenized and normalized String.
+     */
     public static String[] tokenizer(String line) {
         // Credits for this function go to David Conrad, http://stackoverflow.com/questions/3322152/is-there-a-way-to-get-rid-of-accents-and-convert-a-whole-string-to-regular-lette
         // Some adjustments have been made to his code by us.
