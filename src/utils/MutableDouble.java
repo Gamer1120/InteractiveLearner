@@ -3,10 +3,20 @@ package utils;
 public class MutableDouble extends Number {
     double value;
 
+    /**
+     * A double value that may be updated.
+     *
+     * @param val - the initial value
+     */
     public MutableDouble(double val) {
         value = val;
     }
 
+    /**
+     * Adds the given value.
+     *
+     * @param val - the value to be added
+     */
     public void add(double val) {
         value += val;
     }

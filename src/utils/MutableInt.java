@@ -3,10 +3,20 @@ package utils;
 public class MutableInt extends Number {
     int value;
 
+    /**
+     * An int value that may be updated.
+     *
+     * @param val - the initial value
+     */
     public MutableInt(int val) {
         value = val;
     }
 
+    /**
+     * Adds the given value.
+     *
+     * @param val - the value to be added
+     */
     public void add(int val) {
         value += val;
     }
