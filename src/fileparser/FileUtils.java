@@ -15,21 +15,22 @@ public class FileUtils {
     private static final String ENCODING = "UTF-8";
 
     /**
-     * Returns all classes in a given ClassFolder as a List of Documents.
+     * Returns all documents in a given folder and gives them the specified classification.
      *
-     * @param classFolder - the ClassFolder the classes are in.
-     * @return all classes in a given ClassFolder as a list of Documents.
+     * @param path      - the path to the folder
+     * @param className - the name of the classification
+     * @return all documents as a list of Documents
      */
-    public static List<Document> readDocuments(ClassFolder classFolder) {
+    public static List<Document> readDocuments(String path, String className) {
         List<Document> documents = new ArrayList<>();
         // Get all files in the directory.
-        File[] directoryListing = new File(classFolder.path).listFiles();
+        File[] directoryListing = new File(path).listFiles();
         if (directoryListing != null) {
             for (File currentFile : directoryListing) {
                 // Make a tokenized and normalized String array from all files.
                 String[] text = tokenizer(fileToString(currentFile.getPath()));
                 // Add the String array and it's classification to the list of Documents.
-                documents.add(new Document(text, classFolder.name));
+                documents.add(new Document(text, className));
             }
         }
         return documents;
@@ -38,8 +39,8 @@ public class FileUtils {
     /**
      * Makes a String with the contents of the specified text file.
      *
-     * @param path the Path to the text file.
-     * @return a String with the contents of the specified text file.
+     * @param path the Path to the text file
+     * @return a String with the contents of the specified text file
      */
     public static String fileToString(String path) {
         byte[] encoded = new byte[0];
@@ -61,11 +62,12 @@ public class FileUtils {
     /**
      * Tokenizes and normalizes a given String.
      *
-     * @param line the String to be tokenized and normalized.
-     * @return the tokenized and normalized String.
+     * @param line the String to be tokenized and normalized
+     * @return the tokenized and normalized String
      */
     public static String[] tokenizer(String line) {
-        // Credits for this function go to David Conrad, http://stackoverflow.com/questions/3322152/is-there-a-way-to-get-rid-of-accents-and-convert-a-whole-string-to-regular-lette
+        // Credits for this function go to David Conrad:
+        // http://stackoverflow.com/questions/3322152/is-there-a-way-to-get-rid-of-accents-and-convert-a-whole-string-to-regular-lette
         // Some adjustments have been made to his code by us.
         char[] out = new char[line.length()];
         line = Normalizer.normalize(line, Normalizer.Form.NFD);

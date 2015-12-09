@@ -2,7 +2,6 @@ package testing;
 
 import classifier.Document;
 import classifier.MultinomialNaiveBayesClassifier;
-import fileparser.ClassFolder;
 import fileparser.FileUtils;
 
 import java.util.List;
@@ -18,9 +17,9 @@ public class EmailTester {
         // Create a tester for a multinomial naive bayes classifier
         Tester tester = new Tester(new MultinomialNaiveBayesClassifier());
         // Add the ham class documents
-        add(tester, FileUtils.readDocuments(new ClassFolder("db/emails/ham", "ham")));
+        add(tester, FileUtils.readDocuments("db/emails/ham", "ham"));
         // Add the spam class documents
-        add(tester, FileUtils.readDocuments(new ClassFolder("db/emails/spam", "spam")));
+        add(tester, FileUtils.readDocuments("db/emails/spam", "spam"));
         // Execute the test
         tester.test();
     }
