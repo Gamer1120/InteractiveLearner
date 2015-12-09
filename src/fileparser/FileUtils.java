@@ -22,10 +22,13 @@ public class FileUtils {
      */
     public static List<Document> readDocuments(ClassFolder classFolder) {
         List<Document> documents = new ArrayList<>();
+        // Get all files in the directory.
         File[] directoryListing = new File(classFolder.path).listFiles();
         if (directoryListing != null) {
             for (File currentFile : directoryListing) {
+                // Make a tokenized and normalized String array from all files.
                 String[] text = tokenizer(fileToString(currentFile.getPath()));
+                // Add the String array and it's classification to the list of Documents.
                 documents.add(new Document(text, classFolder.name));
             }
         }
@@ -41,11 +44,13 @@ public class FileUtils {
     public static String fileToString(String path) {
         byte[] encoded = new byte[0];
         try {
+            // Try to read all bytes of the file.
             encoded = Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
+            // Create a String out of those bytes.
             return new String(encoded, ENCODING);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -69,6 +74,7 @@ public class FileUtils {
             char c = line.charAt(i);
             if (c <= '\u007F') out[j++] = c;
         }
+        // Make the String lowercase, remove all non-alphabetic characters, and make a String array out of it.
         return new String(out).toLowerCase().replaceAll("[^ a-z]", "").split("\\s+");
     }
 }
