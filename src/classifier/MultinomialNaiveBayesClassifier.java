@@ -29,16 +29,16 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
     public String classify(String... words) {
         // Map of classes and their calculated scores
         Map<String, MutableDouble> scores = new HashMap<>();
-        // Calculate and add the initial priority to the score for each class
+        // Calculate and add the prior probability to the score for each class
         classes.forEach((className, classValues) -> {
-            double prior = Math.log((double) classValues.getDocumentCount() / (double) documentCount);
-            scores.put(className, new MutableDouble(prior));
+            double priorProb = Math.log((double) classValues.getDocumentCount() / (double) documentCount);
+            scores.put(className, new MutableDouble(priorProb));
         });
         // Calculate the score each known word adds for each class
         for (String word : words) {
             // Check if the word is known
             if (vocabulary.contains(word)) {
-                // Calculate and add the score the word gives for each class using laplace smoothing
+                // Calculate and add the conditional probability the word gives for each class with laplace smoothing
                 classes.forEach((className, classValues) -> {
                     MutableDouble score = scores.get(className);
                     double condProb = Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getTotalWordCount() + vocabulary.size()));
