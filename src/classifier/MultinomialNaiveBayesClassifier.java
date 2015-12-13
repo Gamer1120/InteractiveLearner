@@ -1,5 +1,6 @@
 package classifier;
 
+import fileparser.FileUtils;
 import utils.MutableDouble;
 import utils.MutableInt;
 
@@ -26,7 +27,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
      * @inheritDoc
      */
     @Override
-    public String classify(String... words) {
+    public String classify(String[] words) {
         // Map of classes and their calculated scores
         Map<String, MutableDouble> scores = new HashMap<>();
         // Calculate and add the prior probability to the score for each class
@@ -66,8 +67,10 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
         }
         // Add one to the document count of the classification
         classValues.addDocument();
+        // Tokenize the text
+        String[] tokens = FileUtils.tokenize(document.text);
         // For each word in the text
-        for (String word : document.text) {
+        for (String word : tokens) {
             // Add the word to the vocabulary
             vocabulary.add(word);
             // Add the word to the class

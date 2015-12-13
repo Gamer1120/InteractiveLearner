@@ -23,13 +23,14 @@ public class FileUtils {
      */
     public static List<Document> readDocuments(String path, String className) {
         List<Document> documents = new ArrayList<>();
-        // Get all files in the directory.
+        // Get all files in the directory
         File[] directoryListing = new File(path).listFiles();
         if (directoryListing != null) {
+            // For all files
             for (File currentFile : directoryListing) {
-                // Make a tokenized and normalized String array from all files.
-                String[] text = tokenizer(fileToString(currentFile.getPath()));
-                // Add the String array and it's classification to the list of Documents.
+                // Read the file
+                String text = fileToString(currentFile.getPath());
+                // Create a document with the text and classification and add it to the list
                 documents.add(new Document(text, className));
             }
         }
@@ -66,7 +67,7 @@ public class FileUtils {
      * @param line - the String to be tokenized and normalized
      * @return the tokenized and normalized String
      */
-    public static String[] tokenizer(String line) {
+    public static String[] tokenize(String line) {
         // Normalize the String, make the String lowercase, remove all non-alphabetic characters, and tokenize the String.
         return Normalizer.normalize(line, Normalizer.Form.NFD).toLowerCase().replaceAll("[^ a-z]", "").split("\\s+");
     }

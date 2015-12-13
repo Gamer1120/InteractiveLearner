@@ -10,7 +10,7 @@ public interface Classifier {
      * @param words - a tokenized version of the text
      * @return the name of the classification
      */
-    String classify(String... words);
+    String classify(String[] words);
 
     /**
      * Add a document to the training set.

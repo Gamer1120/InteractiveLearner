@@ -2,6 +2,7 @@ package testing;
 
 import classifier.Classifier;
 import classifier.Document;
+import fileparser.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,11 +69,13 @@ public class Tester {
         int incorrect = 0;
         // Test for each document is the classification equals the classification calculated by the classifier
         for (Document document : testDocuments) {
-            if (document.classification.equals(classifier.classify(document.text))) {
-                // Add one to correct if the classification equals the classification calculated by the classifier
+            // Tokenize the text
+            String[] tokens = FileUtils.tokenize(document.text);
+            // Test if the classification equals the classification calculated by the classifier
+            // and update correct and incorrect accordingly
+            if (document.classification.equals(classifier.classify(tokens))) {
                 correct++;
             } else {
-                // Add one to incorrect if the classification doesn't equal the classification calculated by the classifier
                 incorrect++;
             }
         }
