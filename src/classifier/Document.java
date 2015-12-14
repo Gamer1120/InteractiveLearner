@@ -1,8 +1,8 @@
 package classifier;
 
 public class Document {
-    public final String text;
-    public final String classification;
+    private final String text;
+    private String classification;
 
     /**
      * A document consisting of text and a classification.
@@ -12,6 +12,18 @@ public class Document {
      */
     public Document(String text, String classification) {
         this.text = text;
+        this.classification = classification;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public String getClassification() {
+        return classification;
+    }
+
+    public void setClassification(String classification) {
         this.classification = classification;
     }
 }

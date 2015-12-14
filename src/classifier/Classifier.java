@@ -7,10 +7,10 @@ public interface Classifier {
     /**
      * Classify the given text.
      *
-     * @param words - a tokenized version of the text
+     * @param text - the text
      * @return the name of the classification
      */
-    String classify(String[] words);
+    String classify(String text);
 
     /**
      * Add a document to the training set.

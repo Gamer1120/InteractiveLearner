@@ -17,11 +17,11 @@ public class FileUtils {
     /**
      * Returns all documents in a given folder and gives them the specified classification.
      *
-     * @param path      - the path to the folder
-     * @param className - the name of the classification
+     * @param path           - the path to the folder
+     * @param classification - the name of the classification
      * @return all documents as a list of Documents
      */
-    public static List<Document> readDocuments(String path, String className) {
+    public static List<Document> readDocuments(String path, String classification) {
         List<Document> documents = new ArrayList<>();
         // Get all files in the directory
         File[] directoryListing = new File(path).listFiles();
@@ -31,7 +31,7 @@ public class FileUtils {
                 // Read the file
                 String text = fileToString(currentFile.getPath());
                 // Create a document with the text and classification and add it to the list
-                documents.add(new Document(text, className));
+                documents.add(new Document(text, classification));
             }
         }
         return documents;
