@@ -6,7 +6,7 @@ import utils.MutableInt;
 
 import java.util.*;
 
-public class MultinomialNaiveBayesClassifier implements Classifier {
+public class BernoulliNaiveBayesClassifier implements Classifier {
     // Total amount of documents
     private int documentCount;
     // Map of classes and their values
@@ -17,7 +17,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
     /**
      * A Multinomial Naive Bayes implementation of the classifier.
      */
-    public MultinomialNaiveBayesClassifier() {
+    public BernoulliNaiveBayesClassifier() {
         documentCount = 0;
         classes = new HashMap<>();
         vocabulary = new HashSet<>();
@@ -35,14 +35,21 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
             double priorProb = Math.log((double) classValues.getDocumentCount() / (double) documentCount);
             scores.put(className, new MutableDouble(priorProb));
         });
+        String[] tokens = FileUtils.tokenize(text);
+        HashSet<String> words = new HashSet<>(tokens.length);
         // Calculate the score each known word adds for each class
-        for (String word : FileUtils.tokenize(text)) {
-            // Check if the word is known
-            if (vocabulary.contains(word)) {
-                // Calculate and add the conditional probability the word gives for each class with laplace smoothing
+        for (String word : vocabulary) {
+            // Calculate and add the conditional probability the word gives for each class with laplace smoothing
+            if (words.contains(word)) {
                 classes.forEach((className, classValues) -> {
                     MutableDouble score = scores.get(className);
-                    double condProb = Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getTotalWordCount() + vocabulary.size()));
+                    double condProb = Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size()));
+                    score.add(condProb);
+                });
+            } else {
+                classes.forEach((className, classValues) -> {
+                    MutableDouble score = scores.get(className);
+                    double condProb = 1 - Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size()));
                     score.add(condProb);
                 });
             }
@@ -96,8 +103,6 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
     private static class ClassValues {
         // Amount of documents
         private int documentCount;
-        // Amount of words
-        private int totalWordCount;
         // Map of words and the number of times they occur
         private Map<String, MutableInt> individualWordCount;
 
@@ -106,7 +111,6 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
          */
         public ClassValues() {
             documentCount = 0;
-            totalWordCount = 0;
             individualWordCount = new HashMap<>();
         }
 
@@ -123,8 +127,6 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
          * @param word - the word to be added
          */
         public void addWord(String word) {
-            // Add one to the total word count
-            ++totalWordCount;
             // Get the count for the specified word
             MutableInt count = individualWordCount.get(word);
             if (count == null) {
@@ -143,15 +145,6 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
          */
         public int getDocumentCount() {
             return documentCount;
-        }
-
-        /**
-         * Get the total word count.
-         *
-         * @return the total word count
-         */
-        public int getTotalWordCount() {
-            return totalWordCount;
         }
 
         /**

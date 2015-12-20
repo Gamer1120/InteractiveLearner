@@ -24,12 +24,12 @@ public class FileUtils {
     public static List<Document> readDocuments(String path, String classification) {
         List<Document> documents = new ArrayList<>();
         // Get all files in the directory
-        File[] directoryListing = new File(path).listFiles();
-        if (directoryListing != null) {
+        File[] files = new File(path).listFiles();
+        if (files != null) {
             // For all files
-            for (File currentFile : directoryListing) {
+            for (File file : files) {
                 // Read the file
-                String text = fileToString(currentFile.getPath());
+                String text = fileToString(file.getPath());
                 // Create a document with the text and classification and add it to the list
                 documents.add(new Document(text, classification));
             }
@@ -44,20 +44,20 @@ public class FileUtils {
      * @return a String with the contents of the specified text file
      */
     public static String fileToString(String path) {
-        byte[] encoded;
+        byte[] bytes;
         try {
             // Try to read all bytes of the file.
-            encoded = Files.readAllBytes(Paths.get(path));
+            bytes = Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             e.printStackTrace();
             return "";
         }
         try {
             // Create a String out of those bytes.
-            return new String(encoded, ENCODING);
+            return new String(bytes, ENCODING);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            return new String(encoded);
+            return new String(bytes);
         }
     }
 

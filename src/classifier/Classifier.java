@@ -1,6 +1,7 @@
 package classifier;
 
 import java.util.Collection;
+import java.util.Set;
 
 public interface Classifier {
 
@@ -25,4 +26,11 @@ public interface Classifier {
      * @param documents - the documents to be added
      */
     void addAll(Collection<Document> documents);
+
+    /**
+     * Returns all known classes
+     *
+     * @return a set of the classes
+     */
+    Set<String> getClasses();
 }
