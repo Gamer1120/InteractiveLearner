@@ -1,62 +1,36 @@
-package classifier;
+package classifier.naivebayes;
 
+import classifier.Classifier;
+import classifier.Document;
 import fileparser.FileUtils;
-import utils.MutableDouble;
 import utils.MutableInt;
 
 import java.util.*;
 
-public class BernoulliNaiveBayesClassifier implements Classifier {
+public abstract class NaiveBayesClassifierBase implements Classifier {
     // Total amount of documents
-    private int documentCount;
+    protected int documentCount;
     // Map of classes and their values
-    private Map<String, ClassValues> classes;
+    protected Map<String, ClassValues> classes;
     // Set of all words
-    private Set<String> vocabulary;
+    protected Set<String> vocabulary;
 
     /**
-     * A Multinomial Naive Bayes implementation of the classifier.
+     * A base class for the Naive Bayes implementation of the classifier.
      */
-    public BernoulliNaiveBayesClassifier() {
+    public NaiveBayesClassifierBase() {
         documentCount = 0;
         classes = new HashMap<>();
         vocabulary = new HashSet<>();
     }
 
     /**
+     * The classify method has to be implemented by the Naive Bayes classifier that extends this base.
+     *
      * @inheritDoc
      */
     @Override
-    public String classify(String text) {
-        // Map of classes and their calculated scores
-        Map<String, MutableDouble> scores = new HashMap<>();
-        // Calculate and add the prior probability to the score for each class
-        classes.forEach((className, classValues) -> {
-            double priorProb = Math.log((double) classValues.getDocumentCount() / (double) documentCount);
-            scores.put(className, new MutableDouble(priorProb));
-        });
-        String[] tokens = FileUtils.tokenize(text);
-        HashSet<String> words = new HashSet<>(tokens.length);
-        // Calculate the score each known word adds for each class
-        for (String word : vocabulary) {
-            // Calculate and add the conditional probability the word gives for each class with laplace smoothing
-            if (words.contains(word)) {
-                classes.forEach((className, classValues) -> {
-                    MutableDouble score = scores.get(className);
-                    double condProb = Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size()));
-                    score.add(condProb);
-                });
-            } else {
-                classes.forEach((className, classValues) -> {
-                    MutableDouble score = scores.get(className);
-                    double condProb = 1 - Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size()));
-                    score.add(condProb);
-                });
-            }
-        }
-        // Return the class with the highest score
-        return scores.entrySet().stream().max((entry1, entry2) -> entry1.getValue().doubleValue() > entry2.getValue().doubleValue() ? 1 : -1).get().getKey();
-    }
+    public abstract String classify(String text);
 
     /**
      * @inheritDoc
@@ -92,17 +66,11 @@ public class BernoulliNaiveBayesClassifier implements Classifier {
         documents.forEach(this::add);
     }
 
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public Set<String> getClasses() {
-        return classes.keySet();
-    }
-
-    private static class ClassValues {
+    protected static class ClassValues {
         // Amount of documents
         private int documentCount;
+        // Amount of words
+        private int totalWordCount;
         // Map of words and the number of times they occur
         private Map<String, MutableInt> individualWordCount;
 
@@ -111,6 +79,7 @@ public class BernoulliNaiveBayesClassifier implements Classifier {
          */
         public ClassValues() {
             documentCount = 0;
+            totalWordCount = 0;
             individualWordCount = new HashMap<>();
         }
 
@@ -127,6 +96,8 @@ public class BernoulliNaiveBayesClassifier implements Classifier {
          * @param word - the word to be added
          */
         public void addWord(String word) {
+            // Add one to the total word count
+            ++totalWordCount;
             // Get the count for the specified word
             MutableInt count = individualWordCount.get(word);
             if (count == null) {
@@ -145,6 +116,15 @@ public class BernoulliNaiveBayesClassifier implements Classifier {
          */
         public int getDocumentCount() {
             return documentCount;
+        }
+
+        /**
+         * Get the total word count.
+         *
+         * @return the total word count
+         */
+        public int getTotalWordCount() {
+            return totalWordCount;
         }
 
         /**

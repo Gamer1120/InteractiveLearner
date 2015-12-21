@@ -26,11 +26,4 @@ public interface Classifier {
      * @param documents - the documents to be added
      */
     void addAll(Collection<Document> documents);
-
-    /**
-     * Returns all known classes
-     *
-     * @return a set of the classes
-     */
-    Set<String> getClasses();
 }
