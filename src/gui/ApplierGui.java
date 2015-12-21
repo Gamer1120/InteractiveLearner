@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 
 import java.util.Collection;
 
-public class EmailApplierGui extends Application {
+public class ApplierGui extends Application {
     private static final double SIZE = 250d;
     private static final double PADDING = 10d;
     private static final double MIN_WIDTH = 4d * SIZE + 3d * PADDING;
