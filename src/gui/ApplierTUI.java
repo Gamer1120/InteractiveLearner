@@ -5,7 +5,6 @@ import applying.EmailApplier;
 import classifier.Document;
 import classifier.MultinomialNaiveBayesClassifier;
 
-import javax.print.Doc;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -56,7 +55,13 @@ public class ApplierTUI extends Thread {
     public void showClassificationMenu() {
         System.out.println("What would you like to classify this document as? Your options are:");
         applier.getDocuments().keySet().forEach(System.out::println);
+        System.out.println("or type new to create a new category.");
         status = Status.CLASSIFYING;
+    }
+
+    public void showNewCategory() {
+        System.out.println("What would you like the name of the new category to be?");
+        status = Status.NEWCATEGORY;
     }
 
     public void run() {
@@ -117,6 +122,8 @@ public class ApplierTUI extends Thread {
                             applier.reClassify();
                             System.out.println("Classification updated! Please note that it may take multiple times before a document becomes classified as your chosen classification.");
                             showMainMenu();
+                        } else if (line[0].equals("new")) {
+                            showNewCategory();
                         } else {
                             System.out.println("That's not a valid classification.");
                         }
@@ -124,12 +131,23 @@ public class ApplierTUI extends Thread {
                         System.out.println("Please enter one word.");
                     }
                     break;
+                case NEWCATEGORY:
+                    if (line.length == 1) {
+                        Document document = new Document(currentDocument, line[0]);
+                        applier.train(document);
+                        applier.reClassify();
+                        System.out.println("Category created and classification updated! Please note that it may take multiple times before a document becomes classified as your chosen classification.");
+                        showMainMenu();
+                    } else {
+                        System.out.println("Please use one word as the name for the category.");
+                    }
+                    break;
             }
         }
     }
 
     private enum Status {
-        STARTING, MAINMENU, REVIEWING, CLASSIFYING
+        STARTING, MAINMENU, REVIEWING, CLASSIFYING, NEWCATEGORY
     }
 
 }
