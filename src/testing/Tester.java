@@ -5,6 +5,8 @@ import classifier.Document;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Tester {
     // The classifier
@@ -62,21 +64,34 @@ public class Tester {
      * Tests the classifier using the test set.
      */
     public void test() {
-        // The amount of correct classifications
+        // The total amount of correct classifications
         int correct = 0;
-        // The amount of incorrect classifications
+        // The total amount of incorrect classifications
         int incorrect = 0;
+        // Map of classification and how many correctly and incorrectly classified documents for the classification
+        // scores[0] = correct and scores[1] = incorrect
+        Map<String, int[]> scores = new HashMap<>();
         // Test for each document is the classification equals the classification calculated by the classifier
         for (Document document : testDocuments) {
+            // Get the current score for the classification or add a new score if it doesn't exists
+            int[] score = scores.get(document.getClassification());
+            if (score == null) {
+                score = new int[2];
+                scores.put(document.getClassification(), score);
+            }
             // Test if the classification equals the classification calculated by the classifier
-            // and update correct and incorrect accordingly
+            // and update the score accordingly
             if (document.getClassification().equals(classifier.classify(document.getText()))) {
                 correct++;
+                score[0]++;
             } else {
                 incorrect++;
+                score[1]++;
             }
         }
-        // Output the amount of correct and incorrect documents to the console
-        System.out.println("correct = " + correct + ", incorrect = " + incorrect);
+        // Output the amount of correct and incorrect documents for each class to the console
+        scores.forEach((className, score) -> System.out.println(className + ": correct = " + score[0] + ", incorrect = " + score[1]));
+        // Output the total amount of correct and incorrect documents
+        System.out.println("Total: correct = " + correct + ", incorrect = " + incorrect);
     }
 }
