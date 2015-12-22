@@ -8,11 +8,11 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class FileUtils {
     private static final String ENCODING = "UTF-8";
+    private static final HashSet<String> STOP_WORDS = readStopWords();
 
     /**
      * Returns all documents in a given folder and gives them the specified classification.
@@ -68,7 +68,20 @@ public class FileUtils {
      * @return the tokenized and normalized String
      */
     public static String[] tokenize(String line) {
+        ArrayList<String> tokens = new ArrayList<>(Arrays.asList(Normalizer.normalize(line, Normalizer.Form.NFD).toLowerCase().replaceAll("[^ a-z]", "").split("\\s+")));
+        for (Iterator<String> it = tokens.iterator(); it.hasNext(); ) {
+            if (STOP_WORDS.contains(it.next())) {
+                it.remove();
+            }
+        }
         // Normalize the String, make the String lowercase, remove all non-alphabetic characters, and tokenize the String.
-        return Normalizer.normalize(line, Normalizer.Form.NFD).toLowerCase().replaceAll("[^ a-z]", "").split("\\s+");
+        return tokens.toArray(new String[tokens.size()]);
+    }
+
+    public static HashSet<String> readStopWords() {
+        String[] stopWordsArray = fileToString("db/common-english-words.txt").split(",");
+        HashSet<String> stopWordsSet = new HashSet<>(stopWordsArray.length);
+        Collections.addAll(stopWordsSet, stopWordsArray);
+        return stopWordsSet;
     }
 }
