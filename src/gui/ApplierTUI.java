@@ -3,7 +3,7 @@ package gui;
 import applying.Applier;
 import applying.EmailApplier;
 import classifier.Document;
-import classifier.naivebayes.MultinomialNaiveBayesClassifier;
+import classifier.MultinomialNaiveBayesClassifier;
 
 import javax.print.Doc;
 import java.util.List;
@@ -114,6 +114,7 @@ public class ApplierTUI extends Thread {
                             String classification = line[0];
                             Document document = new Document(currentDocument, classification);
                             applier.train(document);
+                            applier.reClassify();
                             System.out.println("Classification updated! Please note that it may take multiple times before a document becomes classified as your chosen classification.");
                             showMainMenu();
                         } else {
