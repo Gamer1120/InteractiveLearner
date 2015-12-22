@@ -4,9 +4,10 @@ import fileparser.FileUtils;
 import utils.MutableDouble;
 import utils.MutableInt;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class MultinomialNaiveBayesClassifier implements Classifier {
+public class MultinomialNaiveBayesClassifier implements Classifier, Serializable {
     // Total amount of documents
     private int documentCount;
     // Map of classes and their values
@@ -85,7 +86,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier {
         documents.forEach(this::add);
     }
 
-    private static class ClassValues {
+    private static class ClassValues implements Serializable{
         // Amount of documents
         private int documentCount;
         // Amount of words

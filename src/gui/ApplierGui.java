@@ -18,7 +18,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import utils.Utils;
 
+import java.io.IOException;
 import java.util.Collection;
 
 public class ApplierGui extends Application {
@@ -26,6 +28,8 @@ public class ApplierGui extends Application {
     private static final double PADDING = 10d;
     private static final double MIN_WIDTH = 4d * SIZE + 3d * PADDING;
     private static final double MIN_HEIGHT = SIZE;
+
+    private static final String FILE_NAME = "applier.obj";
 
     private Applier applier;
 
@@ -40,7 +44,12 @@ public class ApplierGui extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
+        try {
+            applier = Utils.readApplier(FILE_NAME);
+        } catch (IOException | ClassNotFoundException | ClassCastException e) {
+            e.printStackTrace();
+            applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
+        }
 
         BorderPane root = generateRoot();
 
@@ -66,6 +75,15 @@ public class ApplierGui extends Application {
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
         primaryStage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        try {
+            Utils.writeApplier(applier, FILE_NAME);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void reset() {

@@ -3,9 +3,10 @@ package applying;
 import classifier.Classifier;
 import classifier.Document;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Applier {
+public class Applier implements Serializable{
     private Classifier classifier;
     private Map<String, List<String>> documents;
 

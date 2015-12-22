@@ -60,3 +60,4 @@ $RECYCLE.BIN/
 
 .idea/
 out/
+*.obj
