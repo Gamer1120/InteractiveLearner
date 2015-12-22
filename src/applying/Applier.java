@@ -5,13 +5,15 @@ import classifier.Document;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
-public class Applier implements Serializable{
+public class Applier implements Serializable {
     private Classifier classifier;
-    private Map<String, List<String>> documents;
+    private ConcurrentMap<String, List<String>> documents;
 
     public Applier(Classifier classifier) {
-        documents = new HashMap<>();
+        documents = new ConcurrentHashMap<>();
         this.classifier = classifier;
     }
 

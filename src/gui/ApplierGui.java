@@ -10,13 +10,12 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import utils.Utils;
 
@@ -38,12 +37,15 @@ public class ApplierGui extends Application {
     private ListView<String> documentList;
     private ScrollPane scrollPane;
 
+    private Stage primaryStage;
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws Exception {
+        primaryStage = stage;
         try {
             applier = Utils.readApplier(FILE_NAME);
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
@@ -61,8 +63,9 @@ public class ApplierGui extends Application {
 
         HBox bottom = generateBottom();
         classBox = generateClassBox();
+        Button addButton = generateAddButton();
         Button trainButton = generateTrainButton();
-        bottom.getChildren().addAll(classBox, trainButton);
+        bottom.getChildren().addAll(classBox, addButton, trainButton);
 
         root.setCenter(center);
         root.setBottom(bottom);
@@ -70,7 +73,7 @@ public class ApplierGui extends Application {
         reset();
 
         Scene scene = new Scene(root);
-        primaryStage.setTitle("Classifier");
+        primaryStage.setTitle("Interactive Learner");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
@@ -188,16 +191,25 @@ public class ApplierGui extends Application {
         return new ComboBox<>();
     }
 
+    private Button generateAddButton() {
+        Button button = generateButton("New Class");
+        button.setOnAction(event -> generateDialog().showAndWait());
+        return button;
+    }
+
     private Button generateTrainButton() {
-        Button button = generateButton("train");
+        Button button = generateButton("Train");
         button.setOnAction((event -> {
             String classification = classBox.getSelectionModel().getSelectedItem();
-            String text = ((Text) scrollPane.getContent()).getText();
-            if (classification != null && !"".equals(text)) {
-                Document document = new Document(text, classification);
-                applier.train(document);
-                if (applier.reClassify()) {
-                    reset();
+            Text textField = (Text) scrollPane.getContent();
+            if (classification != null && textField != null) {
+                String text = textField.getText();
+                if (!"".equals(text)) {
+                    Document document = new Document(text, classification);
+                    applier.train(document);
+                    if (applier.reClassify()) {
+                        reset();
+                    }
                 }
             }
         }));
@@ -208,5 +220,44 @@ public class ApplierGui extends Application {
         Button button = new Button(text);
         button.setPrefSize(100d, 20d);
         return button;
+    }
+
+    private Stage generateDialog() {
+        Stage dialog = new Stage();
+
+        VBox root = new VBox(PADDING);
+        root.setPadding(new Insets(PADDING));
+        Text text = generateText("Add class:");
+        TextField textField = new TextField();
+        Button trainButton = generateButton("Train");
+        trainButton.setAlignment(Pos.CENTER_RIGHT);
+        trainButton.setOnAction(event -> {
+            applier.train(new Document("", textField.getText()));
+            dialog.close();
+        });
+        Button button = generateButton("Train");
+        button.setOnAction(event -> {
+            String classification = textField.getText();
+            Text content = (Text) scrollPane.getContent();
+            if (content != null && !"".equals(classification)) {
+                String documentText = content.getText();
+                if (!"".equals(documentText)) {
+                    Document document = new Document(documentText, classification);
+                    do {
+                        applier.train(document);
+                    } while (!applier.reClassify());
+                    reset();
+                }
+            }
+            dialog.close();
+        });
+        root.getChildren().addAll(text, textField, button);
+        Scene scene = new Scene(root);
+        dialog.setTitle("Add Class");
+        dialog.setScene(scene);
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(primaryStage);
+
+        return dialog;
     }
 }
