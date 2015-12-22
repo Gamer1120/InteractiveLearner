@@ -1,7 +1,7 @@
 package gui;
 
 import applying.Applier;
-import applying.EmailApplier;
+import applying.BlogApplier;
 import classifier.Document;
 import classifier.MultinomialNaiveBayesClassifier;
 
@@ -28,7 +28,7 @@ public class ApplierTUI extends Thread {
     }
 
     public void init() {
-        applier = EmailApplier.apply(new MultinomialNaiveBayesClassifier());
+        applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
         start();
     }
 
@@ -118,8 +118,9 @@ public class ApplierTUI extends Thread {
                         if (applier.getDocuments().keySet().contains(line[0])) {
                             String classification = line[0];
                             Document document = new Document(currentDocument, classification);
-                            applier.train(document);
-                            applier.reClassify();
+                            do {
+                                applier.train(document);
+                            } while (!applier.reClassify());
                             System.out.println("Classification updated! Please note that it may take multiple times before a document becomes classified as your chosen classification.");
                             showMainMenu();
                         } else if (line[0].equals("new")) {
@@ -134,8 +135,9 @@ public class ApplierTUI extends Thread {
                 case NEWCATEGORY:
                     if (line.length == 1) {
                         Document document = new Document(currentDocument, line[0]);
-                        applier.train(document);
-                        applier.reClassify();
+                        do {
+                            applier.train(document);
+                        } while (!applier.reClassify());
                         System.out.println("Category created and classification updated! Please note that it may take multiple times before a document becomes classified as your chosen classification.");
                         showMainMenu();
                     } else {
