@@ -4,9 +4,12 @@ import fileparser.FileUtils;
 import utils.MutableDouble;
 import utils.MutableInt;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class BernoulliNaiveBayesClassifier implements Classifier {
+public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
+    // Feature Selection
+    private FeatureSelection featureSelection;
     // Total amount of documents
     private int documentCount;
     // Map of classes and their values
@@ -18,6 +21,11 @@ public class BernoulliNaiveBayesClassifier implements Classifier {
      * A Multinomial Naive Bayes implementation of the classifier.
      */
     public BernoulliNaiveBayesClassifier() {
+        this(new FeatureSelection());
+    }
+
+    public BernoulliNaiveBayesClassifier(FeatureSelection featureSelection) {
+        this.featureSelection = featureSelection;
         documentCount = 0;
         classes = new HashMap<>();
         vocabulary = new HashSet<>();
@@ -76,8 +84,10 @@ public class BernoulliNaiveBayesClassifier implements Classifier {
         // For each unique word in the text
         Set<String> words = textToSet(document.getText());
         for (String word : words) {
-            // Add the word to the vocabulary
-            vocabulary.add(word);
+            // Add the word to the vocabulary with feature selection
+            if (featureSelection.select(word)) {
+                vocabulary.add(word);
+            }
             // Add the word to the class
             classValues.addWord(word);
         }
@@ -99,7 +109,7 @@ public class BernoulliNaiveBayesClassifier implements Classifier {
         return set;
     }
 
-    private static class ClassValues {
+    private static class ClassValues implements Serializable {
         // Amount of documents
         private int documentCount;
         // Map of words and the number of times they occur

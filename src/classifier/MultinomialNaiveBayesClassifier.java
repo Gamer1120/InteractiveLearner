@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.*;
 
 public class MultinomialNaiveBayesClassifier implements Classifier, Serializable {
+    // Feature Selection
+    private FeatureSelection featureSelection;
     // Total amount of documents
     private int documentCount;
     // Map of classes and their values
@@ -19,6 +21,11 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
      * A Multinomial Naive Bayes implementation of the classifier.
      */
     public MultinomialNaiveBayesClassifier() {
+        this(new FeatureSelection());
+    }
+
+    public MultinomialNaiveBayesClassifier(FeatureSelection featureSelection) {
+        this.featureSelection = featureSelection;
         documentCount = 0;
         classes = new HashMap<>();
         vocabulary = new HashSet<>();
@@ -70,8 +77,10 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         classValues.addDocument();
         // For each word in the text
         for (String word : FileUtils.tokenize(document.getText())) {
-            // Add the word to the vocabulary
-            vocabulary.add(word);
+            // Add the word to the vocabulary with feature selection
+            if (featureSelection.select(word)) {
+                vocabulary.add(word);
+            }
             // Add the word to the class
             classValues.addWord(word);
         }
@@ -86,7 +95,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         documents.forEach(this::add);
     }
 
-    private static class ClassValues implements Serializable{
+    private static class ClassValues implements Serializable {
         // Amount of documents
         private int documentCount;
         // Amount of words

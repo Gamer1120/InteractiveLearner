@@ -1,6 +1,7 @@
 package testing;
 
 import classifier.Document;
+import classifier.FeatureSelection;
 import classifier.MultinomialNaiveBayesClassifier;
 import fileparser.FileUtils;
 
@@ -15,7 +16,7 @@ public class EmailTester {
      */
     public static void main(String[] args) {
         // Create a tester for a multinomial naive bayes classifier
-        Tester tester = new Tester(new MultinomialNaiveBayesClassifier());
+        Tester tester = new Tester(new MultinomialNaiveBayesClassifier(new FeatureSelection(false)));
         // Add the ham class documents
         add(tester, FileUtils.readDocuments("db/emails/ham", "ham"));
         // Add the spam class documents
