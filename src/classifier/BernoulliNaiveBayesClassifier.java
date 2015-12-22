@@ -1,36 +1,61 @@
-package classifier.naivebayes;
+package classifier;
 
-import classifier.Classifier;
-import classifier.Document;
 import fileparser.FileUtils;
+import utils.MutableDouble;
 import utils.MutableInt;
 
 import java.util.*;
 
-public abstract class NaiveBayesClassifierBase implements Classifier {
+public class BernoulliNaiveBayesClassifier implements Classifier {
     // Total amount of documents
-    protected int documentCount;
+    private int documentCount;
     // Map of classes and their values
-    protected Map<String, ClassValues> classes;
+    private Map<String, ClassValues> classes;
     // Set of all words
-    protected Set<String> vocabulary;
+    private Set<String> vocabulary;
 
     /**
-     * A base class for the Naive Bayes implementation of the classifier.
+     * A Multinomial Naive Bayes implementation of the classifier.
      */
-    public NaiveBayesClassifierBase() {
+    public BernoulliNaiveBayesClassifier() {
         documentCount = 0;
         classes = new HashMap<>();
         vocabulary = new HashSet<>();
     }
 
     /**
-     * The classify method has to be implemented by the Naive Bayes classifier that extends this base.
-     *
      * @inheritDoc
      */
     @Override
-    public abstract String classify(String text);
+    public String classify(String text) {
+        // Map of classes and their calculated scores
+        Map<String, MutableDouble> scores = new HashMap<>();
+        // Calculate and add the prior probability to the score for each class
+        classes.forEach((className, classValues) -> {
+            double priorProb = Math.log((double) classValues.getDocumentCount() / (double) documentCount);
+            scores.put(className, new MutableDouble(priorProb));
+        });
+        Set<String> words = textToSet(text);
+        // Calculate the score each known word adds for each class
+        for (String word : vocabulary) {
+            // Calculate and add the conditional probability the word gives for each class with laplace smoothing
+            if (words.contains(word)) {
+                classes.forEach((className, classValues) -> {
+                    MutableDouble score = scores.get(className);
+                    double condProb = Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size()));
+                    score.add(condProb);
+                });
+            } else {
+                classes.forEach((className, classValues) -> {
+                    MutableDouble score = scores.get(className);
+                    double condProb = 1 - Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size()));
+                    score.add(condProb);
+                });
+            }
+        }
+        // Return the class with the highest score
+        return scores.entrySet().stream().max((entry1, entry2) -> entry1.getValue().doubleValue() > entry2.getValue().doubleValue() ? 1 : -1).get().getKey();
+    }
 
     /**
      * @inheritDoc
@@ -48,8 +73,9 @@ public abstract class NaiveBayesClassifierBase implements Classifier {
         }
         // Add one to the document count of the classification
         classValues.addDocument();
-        // For each word in the text
-        for (String word : FileUtils.tokenize(document.getText())) {
+        // For each unique word in the text
+        Set<String> words = textToSet(document.getText());
+        for (String word : words) {
             // Add the word to the vocabulary
             vocabulary.add(word);
             // Add the word to the class
@@ -66,11 +92,16 @@ public abstract class NaiveBayesClassifierBase implements Classifier {
         documents.forEach(this::add);
     }
 
-    protected static class ClassValues {
+    private Set<String> textToSet(String text) {
+        String[] tokens = FileUtils.tokenize(text);
+        HashSet<String> set = new HashSet<>(tokens.length);
+        Collections.addAll(set, tokens);
+        return set;
+    }
+
+    private static class ClassValues {
         // Amount of documents
         private int documentCount;
-        // Amount of words
-        private int totalWordCount;
         // Map of words and the number of times they occur
         private Map<String, MutableInt> individualWordCount;
 
@@ -79,7 +110,6 @@ public abstract class NaiveBayesClassifierBase implements Classifier {
          */
         public ClassValues() {
             documentCount = 0;
-            totalWordCount = 0;
             individualWordCount = new HashMap<>();
         }
 
@@ -96,8 +126,6 @@ public abstract class NaiveBayesClassifierBase implements Classifier {
          * @param word - the word to be added
          */
         public void addWord(String word) {
-            // Add one to the total word count
-            ++totalWordCount;
             // Get the count for the specified word
             MutableInt count = individualWordCount.get(word);
             if (count == null) {
@@ -116,15 +144,6 @@ public abstract class NaiveBayesClassifierBase implements Classifier {
          */
         public int getDocumentCount() {
             return documentCount;
-        }
-
-        /**
-         * Get the total word count.
-         *
-         * @return the total word count
-         */
-        public int getTotalWordCount() {
-            return totalWordCount;
         }
 
         /**

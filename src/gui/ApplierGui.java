@@ -2,9 +2,8 @@ package gui;
 
 import applying.Applier;
 import applying.BlogApplier;
-import applying.EmailApplier;
 import classifier.Document;
-import classifier.naivebayes.MultinomialNaiveBayesClassifier;
+import classifier.MultinomialNaiveBayesClassifier;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

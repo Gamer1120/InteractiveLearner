@@ -1,7 +1,7 @@
 package testing;
 
 import classifier.Document;
-import classifier.naivebayes.MultinomialNaiveBayesClassifier;
+import classifier.MultinomialNaiveBayesClassifier;
 import fileparser.FileUtils;
 
 import java.util.List;

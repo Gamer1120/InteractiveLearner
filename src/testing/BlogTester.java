@@ -1,6 +1,6 @@
 package testing;
 
-import classifier.naivebayes.MultinomialNaiveBayesClassifier;
+import classifier.MultinomialNaiveBayesClassifier;
 import fileparser.FileUtils;
 
 
