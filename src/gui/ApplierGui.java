@@ -1,6 +1,7 @@
 package gui;
 
 import applying.Applier;
+import applying.BlogApplier;
 import applying.EmailApplier;
 import classifier.Document;
 import classifier.naivebayes.MultinomialNaiveBayesClassifier;
@@ -40,7 +41,7 @@ public class ApplierGui extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        applier = EmailApplier.apply(new MultinomialNaiveBayesClassifier());
+        applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
 
         BorderPane root = generateRoot();
 
@@ -61,7 +62,7 @@ public class ApplierGui extends Application {
         reset();
 
         Scene scene = new Scene(root);
-        primaryStage.setTitle("JokeTeller");
+        primaryStage.setTitle("Classifier");
         primaryStage.setScene(scene);
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
@@ -178,8 +179,9 @@ public class ApplierGui extends Application {
             if (classification != null && !"".equals(text)) {
                 Document document = new Document(text, classification);
                 applier.train(document);
-                applier.reClassify();
-                reset();
+                if (applier.reClassify()) {
+                    reset();
+                }
             }
         }));
         return button;
