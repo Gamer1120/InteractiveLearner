@@ -7,6 +7,9 @@ Compile all files, and run src/testing/EmailTester.java.
 ## Running the classifier on the e-mails
 Compile all files, and run src/testing/BlogTester.java.
 
+## Credits
+The list of stopwords as found in db/common-english-words.txt was found at http://www.textfixer.com/resources/common-english-words.txt
+
 ## FAQ
 
 ### Where can I find the classifier?
