@@ -1,7 +1,7 @@
 package utils;
 
 public class MutableDouble extends Number {
-    double value;
+    private double value;
 
     /**
      * A double value that may be updated.

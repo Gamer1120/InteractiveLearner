@@ -1,7 +1,7 @@
 package utils;
 
 public class MutableInt extends Number {
-    int value;
+    private int value;
 
     /**
      * An int value that may be updated.

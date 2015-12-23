@@ -9,12 +9,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 public class Applier implements Serializable {
-    private Classifier classifier;
-    private ConcurrentMap<String, List<String>> documents;
+    private final Classifier classifier;
+    private final ConcurrentMap<String, List<String>> documents;
 
     public Applier(Classifier classifier) {
-        documents = new ConcurrentHashMap<>();
         this.classifier = classifier;
+        documents = new ConcurrentHashMap<>();
     }
 
     public Map<String, List<String>> getDocuments() {

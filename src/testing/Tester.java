@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class Tester {
     // The classifier
-    private Classifier classifier;
+    private final Classifier classifier;
     // The test set
-    private Collection<Document> testDocuments;
+    private final Collection<Document> testDocuments;
 
     /**
      * Tests the specified classifier.

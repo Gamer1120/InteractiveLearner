@@ -9,13 +9,13 @@ import java.util.*;
 
 public class MultinomialNaiveBayesClassifier implements Classifier, Serializable {
     // Feature Selection
-    private FeatureSelection featureSelection;
+    private final FeatureSelection featureSelection;
     // Total amount of documents
     private int documentCount;
     // Map of classes and their values
-    private Map<String, ClassValues> classes;
+    private final Map<String, ClassValues> classes;
     // Set of all words
-    private Set<String> vocabulary;
+    private final Set<String> vocabulary;
 
     /**
      * A Multinomial Naive Bayes implementation of the classifier.
@@ -101,7 +101,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         // Amount of words
         private int totalWordCount;
         // Map of words and the number of times they occur
-        private Map<String, MutableInt> individualWordCount;
+        private final Map<String, MutableInt> individualWordCount;
 
         /**
          * The values belonging to a class.
