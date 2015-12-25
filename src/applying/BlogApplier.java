@@ -18,8 +18,6 @@ public class BlogApplier {
     }
 
     private static void add(Applier applier, Collection<Document> documents) {
-        for (Document document : documents) {
-            applier.add(document.getText());
-        }
+        documents.stream().map(Document::getText).forEach(applier::add);
     }
 }

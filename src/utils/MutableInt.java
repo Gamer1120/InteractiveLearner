@@ -25,6 +25,22 @@ public class MutableInt extends Number {
      * @inheritDoc
      */
     @Override
+    public byte byteValue() {
+        return (byte) value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public short shortValue() {
+        return (short) value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
     public int intValue() {
         return value;
     }

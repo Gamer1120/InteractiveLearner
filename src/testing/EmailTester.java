@@ -9,7 +9,7 @@ import java.util.List;
 
 public class EmailTester {
     // The percentage of documents to be used for training
-    private static final double TRAINING_PERCENTAGE = 0.10;
+    private static final double TRAINING_PERCENTAGE = 0.10d;
 
     /**
      * Tests the classifier using the email set.
@@ -35,8 +35,8 @@ public class EmailTester {
         // Calculate the amount of documents for training using the training percentage
         int trainingSetSize = (int) (TRAINING_PERCENTAGE * documents.size());
         // Add the training documents to the training set of the classifier
-        tester.addAllTraining(documents.subList(0, trainingSetSize));
+        documents.stream().limit(trainingSetSize).forEach(tester::addTraining);
         // Add the test documents to the test set of the tester
-        tester.addAllTest(documents.subList(trainingSetSize, documents.size()));
+        documents.stream().skip(trainingSetSize).forEach(tester::addTest);
     }
 }

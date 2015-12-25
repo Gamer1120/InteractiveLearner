@@ -10,12 +10,12 @@ import java.util.*;
 public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
     // Feature Selection
     private final FeatureSelection featureSelection;
-    // Total amount of documents
-    private int documentCount;
     // Map of classes and their values
     private final Map<String, ClassValues> classes;
     // Set of all words
     private final Set<String> vocabulary;
+    // Total amount of documents
+    private int documentCount;
 
     /**
      * A Multinomial Naive Bayes implementation of the classifier.
@@ -56,7 +56,7 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
             } else {
                 classes.forEach((className, classValues) -> {
                     MutableDouble score = scores.get(className);
-                    double condProb = 1 - Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size()));
+                    double condProb = Math.log(1d - ((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size())));
                     score.add(condProb);
                 });
             }
@@ -110,10 +110,10 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
     }
 
     private static class ClassValues implements Serializable {
-        // Amount of documents
-        private int documentCount;
         // Map of words and the number of times they occur
         private final Map<String, MutableInt> individualWordCount;
+        // Amount of documents
+        private int documentCount;
 
         /**
          * The values belonging to a class.

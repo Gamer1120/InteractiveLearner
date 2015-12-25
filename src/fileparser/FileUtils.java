@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FileUtils {
@@ -27,12 +28,15 @@ public class FileUtils {
         File[] files = new File(path).listFiles();
         if (files != null) {
             // For all files
-            for (File file : files) {
-                // Read the file
-                String text = fileToString(file.getPath());
-                // Create a document with the text and classification and add it to the list
-                documents.add(new Document(text, classification));
-            }
+            Arrays.stream(files)
+                    // Get the path
+                    .map(File::getPath)
+                    // Read the file
+                    .map(FileUtils::fileToString)
+                    // Create a document with the text and classification
+                    .map(text -> new Document(text, classification))
+                    // Add the document to the list
+                    .forEach(documents::add);
         }
         return documents;
     }
