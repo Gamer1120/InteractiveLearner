@@ -77,7 +77,7 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
         // If the values don't exist, create a new classification with the specified name and a new set of values
         if (classValues == null) {
             classValues = new ClassValues();
-            classes.put(document.getClassification(), new ClassValues());
+            classes.put(document.getClassification(), classValues);
         }
         // Add one to the document count of the classification
         classValues.addDocument();
