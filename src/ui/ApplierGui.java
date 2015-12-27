@@ -3,6 +3,7 @@ package ui;
 import applying.Applier;
 import applying.BlogApplier;
 import classifier.Document;
+import classifier.FeatureSelection;
 import classifier.MultinomialNaiveBayesClassifier;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -24,13 +25,8 @@ import java.util.Collection;
 
 @SuppressWarnings("FieldCanBeLocal")
 public class ApplierGui extends Application {
-    private static final double SIZE = 250d;
     private static final double SPACING = 10d;
-    private static final double MIN_WIDTH = 4d * SIZE + 3d * SPACING;
-    private static final double MIN_HEIGHT = SIZE;
-
     private static final Insets PADDING = new Insets(SPACING);
-
     private static final String FILE_NAME = "applier.obj";
 
     private Stage primaryStage;
@@ -70,6 +66,8 @@ public class ApplierGui extends Application {
         classes = generateClasses();
         documents = generateDocuments();
         document = generateDocument();
+        documentText = generateDocumentText();
+        document.setContent(documentText);
         center.getChildren().addAll(classes, documents, document);
 
         bottom = generateBottom();
@@ -80,13 +78,12 @@ public class ApplierGui extends Application {
 
         root.setCenter(center);
         root.setBottom(bottom);
+
         setClasses();
 
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 1280d, 720d);
         primaryStage.setTitle("Interactive Learner");
         primaryStage.setScene(scene);
-        primaryStage.setMinWidth(MIN_WIDTH);
-        primaryStage.setMinHeight(MIN_HEIGHT);
         primaryStage.show();
     }
 
@@ -106,7 +103,7 @@ public class ApplierGui extends Application {
             applier = Utils.readApplier(FILE_NAME);
             System.out.println("Applier read successfully");
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
-            applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
+            applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier(new FeatureSelection(true)));
             System.out.println("Using new applier");
         }
         return applier;
@@ -169,7 +166,7 @@ public class ApplierGui extends Application {
     }
 
     private void train(String classification, String text) {
-        if (classification != null && text != null && !"".equals(text)) {
+        if (classification != null && text != null && !"".equals(classification) && !"".equals(text)) {
             Document document = new Document(text, classification);
             do {
                 applier.train(document);
@@ -188,7 +185,7 @@ public class ApplierGui extends Application {
 
     private ListView<String> generateClasses() {
         ListView<String> classes = new ListView<>();
-        classes.setPrefWidth(SIZE);
+        classes.prefWidthProperty().bind(center.widthProperty().divide(4));
         classes.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             applierKey = newValue;
             setDocuments();
@@ -199,7 +196,7 @@ public class ApplierGui extends Application {
 
     private ListView<String> generateDocuments() {
         ListView<String> documents = new ListView<>();
-        documents.setPrefWidth(SIZE);
+        documents.prefWidthProperty().bind(center.widthProperty().divide(4));
         documents.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             applierIndex = newValue.intValue();
             setText();
@@ -210,13 +207,15 @@ public class ApplierGui extends Application {
 
     private ScrollPane generateDocument() {
         ScrollPane document = new ScrollPane();
-        document.setFitToWidth(true);
-        document.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        document.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        document.setPrefViewportWidth(2d * SIZE);
-        documentText = generateText("");
-        document.setContent(documentText);
+        document.prefWidthProperty().bind(center.widthProperty().divide(2));
+        document.setPadding(PADDING);
         return document;
+    }
+
+    private Text generateDocumentText() {
+        Text documentText = new Text("");
+        documentText.wrappingWidthProperty().bind(document.widthProperty().subtract(4d * SPACING));
+        return documentText;
     }
 
     private HBox generateBottom() {
@@ -231,51 +230,46 @@ public class ApplierGui extends Application {
     }
 
     private Button generateAddButton() {
-        Button button = generateButton("New Class");
+        Button button = new Button("New Class");
         Dialog dialog = new Dialog();
         button.setOnAction(event -> dialog.showAndWait());
         return button;
     }
 
     private Button generateTrainButton() {
-        Button button = generateButton("Train");
+        Button button = new Button("Train");
         button.setOnAction(event -> train(classBox.getSelectionModel().getSelectedItem(), documentText.getText()));
         return button;
     }
 
-    private Button generateButton(String text) {
-        Button button = new Button(text);
-        button.setPrefSize(100d, 20d);
-        return button;
-    }
-
-    private Text generateText(String s) {
-        Text text = new Text(s);
-        text.setWrappingWidth(2d * SIZE);
-        return text;
-    }
-
     private class Dialog extends Stage {
-        private VBox root;
-        private Text text;
+        private BorderPane root;
+
+        private VBox center;
+        private Label label;
         private TextField textField;
 
-        private HBox buttons;
+        private HBox bottom;
         private Button cancelButton;
         private Button trainButton;
 
         public Dialog() {
             root = generateRoot();
-            text = generateText("Add class:");
-            textField = generateTextField();
 
-            buttons = generateButtons();
+            center = generateCenter();
+            label = generateLabel();
+            textField = generateTextField();
+            center.getChildren().addAll(label, textField);
+
+            bottom = generateBottom();
             cancelButton = generateCancelButton();
             trainButton = generateTrainButton();
-            buttons.getChildren().addAll(cancelButton, trainButton);
+            bottom.getChildren().addAll(cancelButton, trainButton);
 
-            root.getChildren().addAll(text, textField, buttons);
-            Scene scene = new Scene(root);
+            root.setCenter(center);
+            root.setBottom(bottom);
+
+            Scene scene = new Scene(root, 480d, 180d);
             setTitle("Add Class");
             setScene(scene);
             initModality(Modality.WINDOW_MODAL);
@@ -287,17 +281,25 @@ public class ApplierGui extends Application {
             textField.setText("");
         }
 
-        private VBox generateRoot() {
+        private BorderPane generateRoot() {
+            return new BorderPane();
+        }
+
+        private VBox generateCenter() {
             VBox root = new VBox(SPACING);
             root.setPadding(PADDING);
             return root;
+        }
+
+        private Label generateLabel() {
+            return new Label("Add class:");
         }
 
         private TextField generateTextField() {
             return new TextField();
         }
 
-        private HBox generateButtons() {
+        private HBox generateBottom() {
             HBox buttons = new HBox(SPACING);
             buttons.setPadding(PADDING);
             buttons.setAlignment(Pos.CENTER_RIGHT);
@@ -305,13 +307,13 @@ public class ApplierGui extends Application {
         }
 
         private Button generateCancelButton() {
-            Button cancelButton = generateButton("Cancel");
+            Button cancelButton = new Button("Cancel");
             cancelButton.setOnAction(event -> close());
             return cancelButton;
         }
 
         private Button generateTrainButton() {
-            Button trainButton = generateButton("Train");
+            Button trainButton = new Button("Train");
             trainButton.setOnAction(event -> {
                 train(textField.getText(), documentText.getText());
                 close();
