@@ -102,6 +102,14 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
         documents.forEach(this::add);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public void delete(String className) {
+        classes.remove(className);
+    }
+
     private Set<String> textToSet(String text) {
         String[] tokens = FileUtils.tokenize(text);
         HashSet<String> set = new HashSet<>(tokens.length);

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="ui.gui.ApplierController" fx:id="root">
+    <center>
+        <HBox fx:id="center">
+            <ListView fx:id="classes"/>
+            <ListView fx:id="documents"/>
+            <ScrollPane fx:id="document">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+                <Text fx:id="documentText"/>
+            </ScrollPane>
+        </HBox>
+    </center>
+    <bottom>
+        <HBox fx:id="bottom" spacing="10" alignment="CENTER_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Button fx:id="addButton" text="New Class" onAction="#addButton"/>
+            <ComboBox fx:id="classBox"/>
+            <Button fx:id="deleteButton" text="Delete Class" onAction="#deleteButton"/>
+            <Button fx:id="trainButton" text="Train" onAction="#trainButton"/>
+        </HBox>
+    </bottom>
+</BorderPane>

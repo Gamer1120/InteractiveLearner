@@ -95,6 +95,14 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         documents.forEach(this::add);
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public void delete(String className) {
+        classes.remove(className);
+    }
+
     private static class ClassValues implements Serializable {
         // Map of words and the number of times they occur
         private final Map<String, MutableInt> individualWordCount;

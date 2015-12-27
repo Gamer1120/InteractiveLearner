@@ -63,4 +63,10 @@ public class Applier implements Serializable {
     public void trainAll(Collection<Document> documents) {
         classifier.addAll(documents);
     }
+
+    public void delete(String className) {
+        classifier.delete(className);
+        reClassify();
+        documents.remove(className);
+    }
 }

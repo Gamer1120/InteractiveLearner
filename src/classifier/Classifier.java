@@ -25,4 +25,11 @@ public interface Classifier {
      * @param documents - the documents to be added
      */
     void addAll(Collection<Document> documents);
+
+    /**
+     * Deletes a classification.
+     *
+     * @param className - the name of the classification
+     */
+    void delete(String className);
 }
