@@ -23,3 +23,13 @@ Just put the files in the correct directory. For example, if you want to add som
 
 ### Can I also use custom sets to classify?
 Of course! If for example you have some jokes, which can be classified as either good or bad, just put each classification in a different folder. Then, create a Java class in the src/testing package, for example called JokeTester.java. You can base your implementation on the existing classes in that package. 
+
+### What are the minimal system requirements for this classifier?
+It can run on nearly any computer, but for optimal results, please keep the following in mind:
+Java: Java 8
+CPU:Pentium III/Athlon or better
+CPU Speed: 1.0 GHz
+RAM: 256 MB
+OS:	Windows 7 or higher, Mac OSX, Linux. It may work on others, but no guarantees.
+Sound Card:	No
+Free Disk Space: ??? MB (//TODO)
