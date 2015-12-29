@@ -26,10 +26,17 @@ Of course! If for example you have some jokes, which can be classified as either
 
 ### What are the minimal system requirements for this classifier?
 It can run on nearly any computer, but for optimal results, please keep the following in mind:
+
 Java: Java 8
-CPU:Pentium III/Athlon or better
+
+CPU: Pentium III/Athlon or better
+
 CPU Speed: 1.0 GHz
+
 RAM: 256 MB
+
 OS:	Windows 7 or higher, Mac OSX, Linux. It may work on others, but no guarantees.
+
 Sound Card:	No
+
 Free Disk Space: ??? MB (//TODO)
