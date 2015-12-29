@@ -40,3 +40,10 @@ OS:	Windows 7 or higher, Mac OSX, Linux. It may work on others, but no guarantee
 Sound Card:	No
 
 Free Disk Space: ??? MB (//TODO)
+
+### How do I install the classifier?
+There is no installation required. To run the classifier, see "How do I run the classifier?".
+
+### How do I run the classifier?
+Go to ??? (//TODO) and run the ???.jar (//TODO) file.
+
