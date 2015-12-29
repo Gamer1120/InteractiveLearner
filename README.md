@@ -35,7 +35,7 @@ CPU Speed: 1.0 GHz
 
 RAM: 256 MB
 
-OS:	Windows 7 or higher, Mac OSX, Linux. It may work on others, but no guarantees.
+OS:	Windows 7 or higher, Mac OSX, Linux or any other OS that supports Java 8.
 
 Sound Card:	No
 
