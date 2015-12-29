@@ -4,20 +4,23 @@ import applying.Applier;
 import applying.BlogApplier;
 import classifier.Document;
 import classifier.MultinomialNaiveBayesClassifier;
+import utils.Utils;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 public class ApplierTUI extends Thread {
 
+    private static final String FILE_NAME = "applier.obj";
     private boolean loop = true;
-
     private Applier applier;
     private Status status;
     private String currentDocument;
 
     public ApplierTUI() {
+
         status = Status.STARTING;
         init();
         showMainMenu();
@@ -28,7 +31,14 @@ public class ApplierTUI extends Thread {
     }
 
     public void init() {
-        applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
+        try {
+            applier = Utils.readApplier(FILE_NAME);
+            System.out.println("Applier read successfully");
+        } catch (IOException | ClassNotFoundException | ClassCastException e) {
+            applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
+            System.out.println("Using new applier");
+        }
+
         start();
     }
 
@@ -68,6 +78,16 @@ public class ApplierTUI extends Thread {
         Scanner scan = new Scanner(System.in);
         while (loop) {
             String[] line = scan.nextLine().split(" ");
+            if (line.length == 1 && line[0].toLowerCase().equals("exit")) {
+                try {
+                    Utils.writeApplier(applier, FILE_NAME);
+                    System.out.println("Applier successfully saved");
+                    System.exit(0);
+                } catch (IOException e) {
+                    System.out.println("Couldn't save applier!");
+                    e.printStackTrace();
+                }
+            }
             switch (status) {
                 case STARTING:
                     break;
