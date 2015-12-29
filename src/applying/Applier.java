@@ -46,14 +46,19 @@ public class Applier implements Serializable {
     private void add(String classification, String text) {
         List<String> texts = documents.get(classification);
         if (texts == null) {
-            texts = new LinkedList<>();
-            documents.put(classification, texts);
+            texts = addClassification(classification);
         }
         texts.add(text);
     }
 
     public void addAll(Collection<String> texts) {
         texts.forEach(this::add);
+    }
+
+    public List<String> addClassification(String classification) {
+        List<String> texts = new LinkedList<>();
+        documents.put(classification, texts);
+        return texts;
     }
 
     public void train(Document document) {

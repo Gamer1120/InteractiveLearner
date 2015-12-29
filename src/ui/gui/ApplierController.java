@@ -246,20 +246,24 @@ public class ApplierController implements Initializable {
         @FXML
         private Button cancelButton;
         @FXML
-        private Button trainButton;
+        private Button addButton;
 
         @Override
         public void initialize(URL location, ResourceBundle resources) {
             textField.textProperty().addListener((observable, oldValue, newValue) -> {
-                trainButton.setDisable("".equals(newValue));
+                addButton.setDisable("".equals(newValue));
             });
-            trainButton.setDisable(true);
+            addButton.setDisable(true);
         }
 
         @FXML
-        private void train() {
-            ApplierController.this.train(textField.getText(), documentText.getText());
-            close();
+        private void add() {
+            String classification = textField.getText();
+            if (classification != null && !"".equals(classification)) {
+                applier.addClassification(classification);
+                setClasses();
+                close();
+            }
         }
 
         @FXML
