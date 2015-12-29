@@ -97,6 +97,7 @@ public class ApplierController implements Initializable {
         bind();
         addListeners();
         setClasses();
+        updateButtons(true);
     }
 
     public void stop() {
@@ -120,6 +121,9 @@ public class ApplierController implements Initializable {
             applierIndex = newValue.intValue();
             setText();
             updateClassBox();
+        });
+        classBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            updateButtons(newValue.intValue() == -1);
         });
     }
 
@@ -180,6 +184,11 @@ public class ApplierController implements Initializable {
         }
     }
 
+    private void updateButtons(boolean disable) {
+        deleteButton.setDisable(disable || applier.getDocuments().keySet().size() == 1);
+        trainButton.setDisable(disable);
+    }
+
     private void train(String classification, String text) {
         if (classification != null && text != null && !"".equals(classification) && !"".equals(text)) {
             Document document = new Document(text, classification);
@@ -209,8 +218,11 @@ public class ApplierController implements Initializable {
 
     @FXML
     private void deleteButton() {
-        applier.delete(classBox.getSelectionModel().getSelectedItem());
-        setClasses();
+        String classification = classBox.getSelectionModel().getSelectedItem();
+        if (classification != null) {
+            applier.delete(classification);
+            setClasses();
+        }
     }
 
     @FXML
@@ -218,7 +230,7 @@ public class ApplierController implements Initializable {
         train(classBox.getSelectionModel().getSelectedItem(), documentText.getText());
     }
 
-    public class ApplierDialogController {
+    public class ApplierDialogController implements Initializable {
         @FXML
         private BorderPane root;
 
@@ -235,6 +247,14 @@ public class ApplierController implements Initializable {
         private Button cancelButton;
         @FXML
         private Button trainButton;
+
+        @Override
+        public void initialize(URL location, ResourceBundle resources) {
+            textField.textProperty().addListener((observable, oldValue, newValue) -> {
+                trainButton.setDisable("".equals(newValue));
+            });
+            trainButton.setDisable(true);
+        }
 
         @FXML
         private void train() {
