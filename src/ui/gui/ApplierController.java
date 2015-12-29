@@ -23,10 +23,13 @@ import utils.Utils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ApplierController implements Initializable {
+    private static final int MAX_LENGTH = 100;
 
     @FXML
     private BorderPane root;
@@ -36,7 +39,7 @@ public class ApplierController implements Initializable {
     @FXML
     private ListView<String> classes;
     @FXML
-    private ListView<String> documents;
+    private ListView<Text> documents;
     @FXML
     private ScrollPane document;
     @FXML
@@ -76,6 +79,14 @@ public class ApplierController implements Initializable {
         } catch (IOException e) {
             System.out.println("Couldn't write applier");
         }
+    }
+
+    private static Collection<Text> toText(Collection<String> strings) {
+        return strings.stream()
+                .map(s -> s.replace("\r\n", " "))
+                .map(s -> s.length() > MAX_LENGTH ? s.substring(0, MAX_LENGTH).concat("…") : s)
+                .map(Text::new)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
@@ -135,7 +146,9 @@ public class ApplierController implements Initializable {
     }
 
     private void setDocuments(Collection<String> documentCollection) {
-        documents.setItems(FXCollections.observableArrayList(documentCollection));
+        Collection<Text> textCollection = toText(documentCollection);
+        textCollection.forEach(text -> text.wrappingWidthProperty().bind(documents.widthProperty().subtract(30)));
+        documents.setItems(FXCollections.observableArrayList(textCollection));
     }
 
     private void resetDocuments() {
