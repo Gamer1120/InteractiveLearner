@@ -27,7 +27,7 @@ Of course! If for example you have some jokes, which can be classified as either
 ### What are the minimal system requirements for this classifier?
 It can run on nearly any computer, but for optimal results, please keep the following in mind:
 
-Java: Java 8
+Java: Java 8, refer to java.com/sysreq for the minimal requirements for Java 8
 
 CPU: Pentium III/Athlon or better
 
