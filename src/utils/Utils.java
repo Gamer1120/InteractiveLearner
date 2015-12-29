@@ -5,6 +5,8 @@ import applying.Applier;
 import java.io.*;
 
 public class Utils {
+    public static final String FILE_NAME = "applier.obj";
+
     public static Applier readApplier(String fileName) throws IOException, ClassNotFoundException, ClassCastException {
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
         Applier applier = (Applier) in.readObject();

@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.ResourceBundle;
 
 public class ApplierController implements Initializable {
-    private static final String FILE_NAME = "applier.obj";
 
     @FXML
     private BorderPane root;
@@ -61,7 +60,7 @@ public class ApplierController implements Initializable {
     private static Applier readApplier() {
         Applier applier;
         try {
-            applier = Utils.readApplier(FILE_NAME);
+            applier = Utils.readApplier(Utils.FILE_NAME);
             System.out.println("Applier read successfully");
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
             applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier(new FeatureSelection(true)));
@@ -72,7 +71,7 @@ public class ApplierController implements Initializable {
 
     private static void writeApplier(Applier applier) {
         try {
-            Utils.writeApplier(applier, FILE_NAME);
+            Utils.writeApplier(applier, Utils.FILE_NAME);
             System.out.println("Applier written successfully");
         } catch (IOException e) {
             System.out.println("Couldn't write applier");
@@ -97,7 +96,7 @@ public class ApplierController implements Initializable {
         classes.prefWidthProperty().bind(center.widthProperty().divide(4));
         documents.prefWidthProperty().bind(center.widthProperty().divide(4));
         document.prefWidthProperty().bind(center.widthProperty().divide(2));
-        documentText.wrappingWidthProperty().bind(document.widthProperty().subtract(40d));
+        documentText.wrappingWidthProperty().bind(document.widthProperty().subtract(40));
     }
 
     private void addListeners() {

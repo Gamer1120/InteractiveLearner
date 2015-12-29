@@ -13,7 +13,6 @@ import java.util.Scanner;
 
 public class ApplierTUI extends Thread {
 
-    private static final String FILE_NAME = "applier.obj";
     private boolean loop = true;
     private Applier applier;
     private Status status;
@@ -32,7 +31,7 @@ public class ApplierTUI extends Thread {
 
     public void init() {
         try {
-            applier = Utils.readApplier(FILE_NAME);
+            applier = Utils.readApplier(Utils.FILE_NAME);
             System.out.println("Applier read successfully");
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
             applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
@@ -80,7 +79,7 @@ public class ApplierTUI extends Thread {
             String[] line = scan.nextLine().split(" ");
             if (line.length == 1 && line[0].toLowerCase().equals("exit")) {
                 try {
-                    Utils.writeApplier(applier, FILE_NAME);
+                    Utils.writeApplier(applier, Utils.FILE_NAME);
                     System.out.println("Applier successfully saved");
                     System.exit(0);
                 } catch (IOException e) {
