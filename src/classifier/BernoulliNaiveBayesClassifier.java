@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
+    //FIXME
     // Feature Selection
     private final FeatureSelection featureSelection;
     // Map of classes and their values
@@ -144,6 +145,7 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
          * @param word - the word to be added
          */
         public void addWord(String word) {
+            //FIXME?
             // Get the count for the specified word
             MutableInt count = individualWordCount.get(word);
             if (count == null) {

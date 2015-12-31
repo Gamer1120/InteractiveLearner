@@ -5,6 +5,14 @@ public class MutableDouble extends Number {
 
     /**
      * A double value that may be updated.
+     * The default initial value is zero.
+     */
+    public MutableDouble() {
+        this(0d);
+    }
+
+    /**
+     * A double value that may be updated.
      *
      * @param val - the initial value
      */

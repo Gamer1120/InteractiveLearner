@@ -12,8 +12,6 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
     private final FeatureSelection featureSelection;
     // Map of classes and their values
     private final Map<String, ClassValues> classes;
-    // Set of all words
-    private final Set<String> vocabulary;
     // Total amount of documents
     private int documentCount;
 
@@ -28,7 +26,6 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         this.featureSelection = featureSelection;
         documentCount = 0;
         classes = new HashMap<>();
-        vocabulary = new HashSet<>();
     }
 
     /**
@@ -36,6 +33,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
      */
     @Override
     public String classify(String text) {
+        Set<String> vocabulary = getVocabulary();
         // Map of classes and their calculated scores
         Map<String, MutableDouble> scores = new HashMap<>();
         // Calculate and add the prior probability to the score for each class
@@ -70,20 +68,10 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         ClassValues classValues = classes.get(document.getClassification());
         // If the values don't exist, create a new classification with the specified name and a new set of values
         if (classValues == null) {
-            classValues = new ClassValues();
-            classes.put(document.getClassification(), classValues);
+            classValues = addClass(document.getClassification());
         }
         // Add one to the document count of the classification
-        classValues.addDocument();
-        // For each word in the text
-        for (String word : FileUtils.tokenize(document.getText())) {
-            // Add the word to the vocabulary with feature selection
-            if (featureSelection.select(word)) {
-                vocabulary.add(word);
-            }
-            // Add the word to the class
-            classValues.addWord(word);
-        }
+        classValues.addDocument(document.getText());
     }
 
     /**
@@ -95,6 +83,12 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         documents.forEach(this::add);
     }
 
+    public ClassValues addClass(String className) {
+        ClassValues classValues = new ClassValues();
+        classes.put(className, classValues);
+        return classValues;
+    }
+
     /**
      * @inheritDoc
      */
@@ -103,7 +97,18 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         classes.remove(className);
     }
 
-    private static class ClassValues implements Serializable {
+    public Set<String> getClasses() {
+        return classes.keySet();
+    }
+
+    public Set<String> getVocabulary() {
+        Set<String> vocabulary = new HashSet<>();
+        classes.forEach((className, classValues) -> vocabulary.addAll(classValues.getIndividualWordCount().keySet()));
+        //TODO feature selection
+        return vocabulary;
+    }
+
+    public static class ClassValues implements Serializable {
         // Map of words and the number of times they occur
         private final Map<String, MutableInt> individualWordCount;
         // Amount of documents
@@ -123,8 +128,13 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         /**
          * Adds a document to the document count.
          */
-        public void addDocument() {
-            ++documentCount;
+        public void addDocument(String text) {
+            documentCount++;
+            // For each word in the text
+            for (String word : FileUtils.tokenize(text)) {
+                // Add the word to the values
+                addWord(word);
+            }
         }
 
         /**
@@ -134,7 +144,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
          */
         public void addWord(String word) {
             // Add one to the total word count
-            ++totalWordCount;
+            totalWordCount++;
             // Get the count for the specified word
             MutableInt count = individualWordCount.get(word);
             if (count == null) {
@@ -143,6 +153,29 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
             } else {
                 // Add one to the count
                 count.add(1);
+            }
+        }
+
+        public void removeDocument(String text) {
+            documentCount--;
+            // For each word in the text
+            for (String word : FileUtils.tokenize(text)) {
+                // Remove the word from the values
+                removeWord(word);
+            }
+        }
+
+        public void removeWord(String word) {
+            // Remove one from the total word count
+            totalWordCount--;
+            // Get the count for the specified word
+            MutableInt count = individualWordCount.get(word);
+            if (count != null) {
+                if (count.intValue() == 1) {
+                    individualWordCount.remove(word);
+                } else {
+                    count.add(-1);
+                }
             }
         }
 
@@ -162,6 +195,15 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
          */
         public int getTotalWordCount() {
             return totalWordCount;
+        }
+
+        /**
+         * Get the count of all individual words.
+         *
+         * @return a map of words and their count
+         */
+        public Map<String, MutableInt> getIndividualWordCount() {
+            return individualWordCount;
         }
 
         /**

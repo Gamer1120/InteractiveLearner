@@ -5,6 +5,14 @@ public class MutableInt extends Number {
 
     /**
      * An int value that may be updated.
+     * The default initial value is zero.
+     */
+    public MutableInt() {
+        this(0);
+    }
+
+    /**
+     * An int value that may be updated.
      *
      * @param val - the initial value
      */
