@@ -1,7 +1,7 @@
 package applying;
 
 import classifier.Classifier;
-import classifier.Document;
+import classifier.TempDocument;
 
 import java.io.Serializable;
 import java.util.*;
@@ -61,11 +61,11 @@ public class Applier implements Serializable {
         return texts;
     }
 
-    public void train(Document document) {
+    public void train(TempDocument document) {
         classifier.add(document);
     }
 
-    public void trainAll(Collection<Document> documents) {
+    public void trainAll(Collection<TempDocument> documents) {
         classifier.addAll(documents);
     }
 

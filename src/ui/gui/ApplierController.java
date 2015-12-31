@@ -2,9 +2,9 @@ package ui.gui;
 
 import applying.Applier;
 import applying.BlogApplier;
-import classifier.Document;
-import classifier.FeatureSelection;
-import classifier.MultinomialNaiveBayesClassifier;
+import classifier.TempDocument;
+import classifier.TempFeatureSelection;
+import classifier.TempMultinomialNaiveBayesClassifier;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -66,7 +66,7 @@ public class ApplierController implements Initializable {
             applier = Utils.readApplier(Utils.FILE_NAME);
             System.out.println("Applier read successfully");
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
-            applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier(new FeatureSelection(true)));
+            applier = BlogApplier.apply(new TempMultinomialNaiveBayesClassifier(new TempFeatureSelection(true)));
             System.out.println("Using new applier");
         }
         return applier;
@@ -191,7 +191,7 @@ public class ApplierController implements Initializable {
 
     private void train(String classification, String text) {
         if (classification != null && text != null && !"".equals(classification) && !"".equals(text)) {
-            Document document = new Document(text, classification);
+            TempDocument document = new TempDocument(text, classification);
             do {
                 applier.train(document);
             } while (!applier.reClassify());

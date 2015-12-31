@@ -1,7 +1,7 @@
 package testing;
 
 import classifier.Classifier;
-import classifier.Document;
+import classifier.TempDocument;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +12,7 @@ public class Tester {
     // The classifier
     private final Classifier classifier;
     // The test set
-    private final Collection<Document> testDocuments;
+    private final Collection<TempDocument> testDocuments;
 
     /**
      * Tests the specified classifier.
@@ -29,7 +29,7 @@ public class Tester {
      *
      * @param document - the document to be added
      */
-    public void addTraining(Document document) {
+    public void addTraining(TempDocument document) {
         classifier.add(document);
     }
 
@@ -38,7 +38,7 @@ public class Tester {
      *
      * @param document - the document to be added
      */
-    public void addTest(Document document) {
+    public void addTest(TempDocument document) {
         testDocuments.add(document);
     }
 
@@ -47,7 +47,7 @@ public class Tester {
      *
      * @param documents - the documents to be added
      */
-    public void addAllTraining(Collection<Document> documents) {
+    public void addAllTraining(Collection<TempDocument> documents) {
         classifier.addAll(documents);
     }
 
@@ -56,7 +56,7 @@ public class Tester {
      *
      * @param documents - the documents to be added
      */
-    public void addAllTest(Collection<Document> documents) {
+    public void addAllTest(Collection<TempDocument> documents) {
         testDocuments.addAll(documents);
     }
 
@@ -72,7 +72,7 @@ public class Tester {
         // scores[0] = correct and scores[1] = incorrect
         Map<String, int[]> scores = new HashMap<>();
         // Test for each document is the classification equals the classification calculated by the classifier
-        for (Document document : testDocuments) {
+        for (TempDocument document : testDocuments) {
             // Get the current score for the classification or add a new score if it doesn't exists
             int[] score = scores.get(document.getClassification());
             if (score == null) {

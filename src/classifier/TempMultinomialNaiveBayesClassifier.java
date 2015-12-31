@@ -7,29 +7,25 @@ import utils.MutableInt;
 import java.io.Serializable;
 import java.util.*;
 
-public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
-    //FIXME
+public class TempMultinomialNaiveBayesClassifier implements Classifier, Serializable {
     // Feature Selection
-    private final FeatureSelection featureSelection;
+    private final TempFeatureSelection featureSelection;
     // Map of classes and their values
     private final Map<String, ClassValues> classes;
-    // Set of all words
-    private final Set<String> vocabulary;
     // Total amount of documents
     private int documentCount;
 
     /**
      * A Multinomial Naive Bayes implementation of the classifier.
      */
-    public BernoulliNaiveBayesClassifier() {
-        this(new FeatureSelection());
+    public TempMultinomialNaiveBayesClassifier() {
+        this(new TempFeatureSelection());
     }
 
-    public BernoulliNaiveBayesClassifier(FeatureSelection featureSelection) {
+    public TempMultinomialNaiveBayesClassifier(TempFeatureSelection featureSelection) {
         this.featureSelection = featureSelection;
         documentCount = 0;
         classes = new HashMap<>();
-        vocabulary = new HashSet<>();
     }
 
     /**
@@ -37,6 +33,7 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
      */
     @Override
     public String classify(String text) {
+        Set<String> vocabulary = getVocabulary();
         // Map of classes and their calculated scores
         Map<String, MutableDouble> scores = new HashMap<>();
         // Calculate and add the prior probability to the score for each class
@@ -44,20 +41,14 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
             double priorProb = Math.log((double) classValues.getDocumentCount() / (double) documentCount);
             scores.put(className, new MutableDouble(priorProb));
         });
-        Set<String> words = textToSet(text);
         // Calculate the score each known word adds for each class
-        for (String word : vocabulary) {
-            // Calculate and add the conditional probability the word gives for each class with laplace smoothing
-            if (words.contains(word)) {
+        for (String word : FileUtils.tokenize(text)) {
+            // Check if the word is known
+            if (vocabulary.contains(word)) {
+                // Calculate and add the conditional probability the word gives for each class with laplace smoothing
                 classes.forEach((className, classValues) -> {
                     MutableDouble score = scores.get(className);
-                    double condProb = Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size()));
-                    score.add(condProb);
-                });
-            } else {
-                classes.forEach((className, classValues) -> {
-                    MutableDouble score = scores.get(className);
-                    double condProb = Math.log(1d - ((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getDocumentCount() + classes.size())));
+                    double condProb = Math.log((double) (classValues.getIndividualWordCount(word) + 1) / (double) (classValues.getTotalWordCount() + vocabulary.size()));
                     score.add(condProb);
                 });
             }
@@ -70,37 +61,32 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
      * @inheritDoc
      */
     @Override
-    public void add(Document document) {
+    public void add(TempDocument document) {
         // Add one to the total document count
         ++documentCount;
         // Get the values for the classification of the document
         ClassValues classValues = classes.get(document.getClassification());
         // If the values don't exist, create a new classification with the specified name and a new set of values
         if (classValues == null) {
-            classValues = new ClassValues();
-            classes.put(document.getClassification(), classValues);
+            classValues = addClass(document.getClassification());
         }
         // Add one to the document count of the classification
-        classValues.addDocument();
-        // For each unique word in the text
-        Set<String> words = textToSet(document.getText());
-        for (String word : words) {
-            // Add the word to the vocabulary with feature selection
-            if (featureSelection.select(word)) {
-                vocabulary.add(word);
-            }
-            // Add the word to the class
-            classValues.addWord(word);
-        }
+        classValues.addDocument(document.getText());
     }
 
     /**
      * @inheritDoc
      */
     @Override
-    public void addAll(Collection<Document> documents) {
+    public void addAll(Collection<TempDocument> documents) {
         // Add all documents
         documents.forEach(this::add);
+    }
+
+    public ClassValues addClass(String className) {
+        ClassValues classValues = new ClassValues();
+        classes.put(className, classValues);
+        return classValues;
     }
 
     /**
@@ -111,32 +97,44 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
         classes.remove(className);
     }
 
-    private Set<String> textToSet(String text) {
-        String[] tokens = FileUtils.tokenize(text);
-        HashSet<String> set = new HashSet<>(tokens.length);
-        Collections.addAll(set, tokens);
-        return set;
+    public Set<String> getClasses() {
+        return classes.keySet();
     }
 
-    private static class ClassValues implements Serializable {
+    public Set<String> getVocabulary() {
+        Set<String> vocabulary = new HashSet<>();
+        classes.forEach((className, classValues) -> vocabulary.addAll(classValues.getIndividualWordCount().keySet()));
+        //TODO feature selection
+        return vocabulary;
+    }
+
+    public static class ClassValues implements Serializable {
         // Map of words and the number of times they occur
         private final Map<String, MutableInt> individualWordCount;
         // Amount of documents
         private int documentCount;
+        // Amount of words
+        private int totalWordCount;
 
         /**
          * The values belonging to a class.
          */
         public ClassValues() {
             documentCount = 0;
+            totalWordCount = 0;
             individualWordCount = new HashMap<>();
         }
 
         /**
          * Adds a document to the document count.
          */
-        public void addDocument() {
-            ++documentCount;
+        public void addDocument(String text) {
+            documentCount++;
+            // For each word in the text
+            for (String word : FileUtils.tokenize(text)) {
+                // Add the word to the values
+                addWord(word);
+            }
         }
 
         /**
@@ -145,7 +143,8 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
          * @param word - the word to be added
          */
         public void addWord(String word) {
-            //FIXME?
+            // Add one to the total word count
+            totalWordCount++;
             // Get the count for the specified word
             MutableInt count = individualWordCount.get(word);
             if (count == null) {
@@ -157,6 +156,29 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
             }
         }
 
+        public void removeDocument(String text) {
+            documentCount--;
+            // For each word in the text
+            for (String word : FileUtils.tokenize(text)) {
+                // Remove the word from the values
+                removeWord(word);
+            }
+        }
+
+        public void removeWord(String word) {
+            // Remove one from the total word count
+            totalWordCount--;
+            // Get the count for the specified word
+            MutableInt count = individualWordCount.get(word);
+            if (count != null) {
+                if (count.intValue() == 1) {
+                    individualWordCount.remove(word);
+                } else {
+                    count.add(-1);
+                }
+            }
+        }
+
         /**
          * Get the document count.
          *
@@ -164,6 +186,24 @@ public class BernoulliNaiveBayesClassifier implements Classifier, Serializable {
          */
         public int getDocumentCount() {
             return documentCount;
+        }
+
+        /**
+         * Get the total word count.
+         *
+         * @return the total word count
+         */
+        public int getTotalWordCount() {
+            return totalWordCount;
+        }
+
+        /**
+         * Get the count of all individual words.
+         *
+         * @return a map of words and their count
+         */
+        public Map<String, MutableInt> getIndividualWordCount() {
+            return individualWordCount;
         }
 
         /**

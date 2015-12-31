@@ -7,18 +7,18 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FeatureSelection implements Serializable {
+public class TempFeatureSelection implements Serializable {
     // Set that contains stopwords
     private Set<String> stopWords;
 
     /**
      * Class that contains multiple feature selection methods with toggles to turn them on or of
      */
-    public FeatureSelection() {
+    public TempFeatureSelection() {
         this(true);
     }
 
-    public FeatureSelection(boolean stopWords) {
+    public TempFeatureSelection(boolean stopWords) {
         if (stopWords) {
             this.stopWords = readStopWords();
         }

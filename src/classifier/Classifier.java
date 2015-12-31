@@ -17,14 +17,14 @@ public interface Classifier {
      *
      * @param document - the document to be added
      */
-    void add(Document document);
+    void add(TempDocument document);
 
     /**
      * Adds all documents to the training set.
      *
      * @param documents - the documents to be added
      */
-    void addAll(Collection<Document> documents);
+    void addAll(Collection<TempDocument> documents);
 
     /**
      * Deletes a classification.

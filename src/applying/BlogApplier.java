@@ -1,7 +1,7 @@
 package applying;
 
 import classifier.Classifier;
-import classifier.Document;
+import classifier.TempDocument;
 import fileparser.FileUtils;
 
 import java.util.Collection;
@@ -17,7 +17,7 @@ public class BlogApplier {
         return applier;
     }
 
-    private static void add(Applier applier, Collection<Document> documents) {
-        documents.stream().map(Document::getText).forEach(applier::add);
+    private static void add(Applier applier, Collection<TempDocument> documents) {
+        documents.stream().map(TempDocument::getText).forEach(applier::add);
     }
 }

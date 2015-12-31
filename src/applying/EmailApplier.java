@@ -1,7 +1,7 @@
 package applying;
 
 import classifier.Classifier;
-import classifier.Document;
+import classifier.TempDocument;
 import fileparser.FileUtils;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public class EmailApplier {
         return applier;
     }
 
-    private static void add(Applier applier, List<Document> documents) {
+    private static void add(Applier applier, List<TempDocument> documents) {
         // Calculate the amount of documents for training using the training percentage
         int trainingSetSize = (int) (TRAINING_PERCENTAGE * documents.size());
         documents.stream()
@@ -25,7 +25,7 @@ public class EmailApplier {
                 .forEach(applier::train);
         documents.stream()
                 .skip(trainingSetSize)
-                .map(Document::getText)
+                .map(TempDocument::getText)
                 .forEach(applier::add);
     }
 }

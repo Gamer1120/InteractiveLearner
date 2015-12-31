@@ -1,6 +1,6 @@
 package fileparser;
 
-import classifier.Document;
+import classifier.TempDocument;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +22,8 @@ public class FileUtils {
      * @param classification - the name of the classification
      * @return all documents as a list of Documents
      */
-    public static List<Document> readDocuments(String path, String classification) {
-        List<Document> documents = new ArrayList<>();
+    public static List<TempDocument> readDocuments(String path, String classification) {
+        List<TempDocument> documents = new ArrayList<>();
         // Get all files in the directory
         File[] files = new File(path).listFiles();
         if (files != null) {
@@ -34,7 +34,7 @@ public class FileUtils {
                     // Read the file
                     .map(FileUtils::fileToString)
                     // Create a document with the text and classification
-                    .map(text -> new Document(text, classification))
+                    .map(text -> new TempDocument(text, classification))
                     // Add the document to the list
                     .forEach(documents::add);
         }

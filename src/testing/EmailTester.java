@@ -1,8 +1,8 @@
 package testing;
 
-import classifier.Document;
-import classifier.FeatureSelection;
-import classifier.MultinomialNaiveBayesClassifier;
+import classifier.TempDocument;
+import classifier.TempFeatureSelection;
+import classifier.TempMultinomialNaiveBayesClassifier;
 import fileparser.FileUtils;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class EmailTester {
      */
     public static void main(String[] args) {
         // Create a tester for a multinomial naive bayes classifier
-        Tester tester = new Tester(new MultinomialNaiveBayesClassifier(new FeatureSelection(false)));
+        Tester tester = new Tester(new TempMultinomialNaiveBayesClassifier(new TempFeatureSelection(false)));
         // Add the ham class documents
         add(tester, FileUtils.readDocuments("db/emails/ham", "ham"));
         // Add the spam class documents
@@ -31,7 +31,7 @@ public class EmailTester {
      * @param tester    - the tester to add the documents to.
      * @param documents - the documents to be added.
      */
-    private static void add(Tester tester, List<Document> documents) {
+    private static void add(Tester tester, List<TempDocument> documents) {
         // Calculate the amount of documents for training using the training percentage
         int trainingSetSize = (int) (TRAINING_PERCENTAGE * documents.size());
         // Add the training documents to the training set of the classifier

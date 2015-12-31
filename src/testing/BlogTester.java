@@ -1,7 +1,7 @@
 package testing;
 
-import classifier.FeatureSelection;
-import classifier.MultinomialNaiveBayesClassifier;
+import classifier.TempFeatureSelection;
+import classifier.TempMultinomialNaiveBayesClassifier;
 import fileparser.FileUtils;
 
 
@@ -12,7 +12,7 @@ public class BlogTester {
      */
     public static void main(String[] args) {
         // Create a tester for a multinomial naive bayes classifier
-        Tester tester = new Tester(new MultinomialNaiveBayesClassifier(new FeatureSelection(true)));
+        Tester tester = new Tester(new TempMultinomialNaiveBayesClassifier(new TempFeatureSelection(true)));
         // Add the female class training set to the training set of the classifier
         tester.addAllTraining(FileUtils.readDocuments("db/blogs/F/train", "female"));
         // Add the male class training set to the training set of the classifier

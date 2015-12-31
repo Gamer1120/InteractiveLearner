@@ -1,29 +1,60 @@
 package classifier;
 
+import fileparser.FileUtils;
+import utils.MutableInt;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Document {
-    private final String text;
-    private String classification;
+    private Map<String, MutableInt> tokens;
+    private String category;
 
-    /**
-     * A document consisting of text and a classification.
-     *
-     * @param text           - the text of the document
-     * @param classification - the name of the classification
-     */
-    public Document(String text, String classification) {
-        this.text = text;
-        this.classification = classification;
+    public Document() {
+        this(null);
     }
 
-    public String getText() {
-        return text;
+    public Document(String category) {
+        this(category, null);
     }
 
-    public String getClassification() {
-        return classification;
+    public Document(String category, String text) {
+        this.category = category;
+        tokens = new HashMap<>();
+        if (text != null) {
+            addText(text);
+        }
     }
 
-    public void setClassification(String classification) {
-        this.classification = classification;
+    public int getCount(String token) {
+        MutableInt count = tokens.get(token);
+        return count == null ? 0 : count.intValue();
+    }
+
+    public Map<String, MutableInt> getTokens() {
+        return tokens;
+    }
+
+    public void addToken(String token) {
+        MutableInt count = tokens.get(token);
+        if (count == null) {
+            tokens.put(token, new MutableInt(1));
+        } else {
+            count.add(1);
+        }
+    }
+
+    public void addText(String text) {
+        for (String token : FileUtils.tokenize(text)) {
+            addToken(token);
+        }
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }
