@@ -19,7 +19,7 @@ public class Utils {
     private static final String ENCODING = "UTF-8";
 
     /**
-     * Reads the applier to the specified location.
+     * Reads the applier from the specified location.
      *
      * @param location - the specified location
      * @return the applier
@@ -38,7 +38,7 @@ public class Utils {
     }
 
     /**
-     * Write the applier to the specified location
+     * Write the applier to the specified location.
      *
      * @param applier  - the applier
      * @param location - the specified location

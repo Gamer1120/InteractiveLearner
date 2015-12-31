@@ -259,7 +259,7 @@ public class ApplierController implements Initializable {
         private void add() {
             String classification = textField.getText();
             if (classification != null && !"".equals(classification)) {
-                applier.addClassification(classification);
+                applier.addCategory(classification);
                 setClasses();
                 close();
             }

@@ -5,16 +5,14 @@ import model.Document;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class Applier implements Serializable {
     private final Classifier classifier;
-    private final ConcurrentMap<String, List<String>> documents;
+    private final Map<String, List<String>> documents;
 
     public Applier(Classifier classifier) {
         this.classifier = classifier;
-        documents = new ConcurrentHashMap<>();
+        documents = new HashMap<>();
     }
 
     public Map<String, List<String>> getDocuments() {
@@ -22,31 +20,34 @@ public class Applier implements Serializable {
     }
 
     public boolean reClassify() {
-        boolean changed = false;
-        for (Map.Entry<String, List<String>> entry : documents.entrySet()) {
-            String oldClass = entry.getKey();
-            List<String> texts = entry.getValue();
+        Map<String, List<String>> tempDocuments = new HashMap<>();
+        documents.forEach((oldCategory, texts) -> {
             for (Iterator<String> it = texts.iterator(); it.hasNext(); ) {
                 String text = it.next();
-                String newClass = classifier.classify(text);
-                if (!oldClass.equals(newClass)) {
+                String newCategory = classifier.classify(text);
+                if (!oldCategory.equals(newCategory)) {
                     it.remove();
-                    add(newClass, text);
-                    changed = true;
+                    List<String> tempTexts = tempDocuments.get(newCategory);
+                    if (tempTexts == null) {
+                        tempTexts = new LinkedList<>();
+                        tempDocuments.put(newCategory, tempTexts);
+                    }
+                    tempTexts.add(text);
                 }
             }
-        }
-        return changed;
+        });
+        tempDocuments.forEach((category, texts) -> texts.forEach(text -> add(category, text)));
+        return !tempDocuments.isEmpty();
     }
 
     public void add(String text) {
         add(classifier.classify(text), text);
     }
 
-    private void add(String classification, String text) {
-        List<String> texts = documents.get(classification);
+    private void add(String category, String text) {
+        List<String> texts = documents.get(category);
         if (texts == null) {
-            texts = addClassification(classification);
+            texts = addCategory(category);
         }
         texts.add(text);
     }
@@ -55,9 +56,9 @@ public class Applier implements Serializable {
         texts.forEach(this::add);
     }
 
-    public List<String> addClassification(String classification) {
+    public List<String> addCategory(String category) {
         List<String> texts = new LinkedList<>();
-        documents.put(classification, texts);
+        documents.put(category, texts);
         return texts;
     }
 

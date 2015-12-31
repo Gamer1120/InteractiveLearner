@@ -59,7 +59,7 @@ public class Tester {
      * @param texts - the texts to be added
      */
     public void addAllTest(Collection<Text> texts) {
-        texts.forEach(this::addTest);
+        testSet.addAll(texts);
     }
 
     /**
