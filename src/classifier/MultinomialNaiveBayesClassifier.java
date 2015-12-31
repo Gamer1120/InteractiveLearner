@@ -62,8 +62,8 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
     }
 
     private void init() {
-        vocabulary = new HashMap<>();
         categories = new HashMap<>();
+        vocabulary = new HashMap<>();
         documents = 0;
     }
 
@@ -80,7 +80,7 @@ public class MultinomialNaiveBayesClassifier implements Classifier, Serializable
         } else {
             count.add(1);
         }
-    }
+}
 
     private void addWord(String word, String category, int count) {
         Map<String, MutableInt> wordCategoryCount = vocabulary.get(word);
