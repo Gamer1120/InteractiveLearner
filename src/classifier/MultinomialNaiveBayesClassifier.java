@@ -1,15 +1,17 @@
 package classifier;
 
-import fileparser.FileUtils;
+import utils.Utils;
+import model.Document;
 import utils.MutableDouble;
 import utils.MutableInt;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class MultinomialNaiveBayesClassifier {
+public class MultinomialNaiveBayesClassifier implements Classifier, Serializable {
     private static final double CRITICAL_VALUE = 10.83;
 
-    private List<Document> trainingSet;
+    private final List<Document> trainingSet;
     private Map<String, MutableInt> categories;
     private Map<String, Map<String, MutableInt>> vocabulary;
     private Map<String, Double> priorProb;
@@ -20,39 +22,43 @@ public class MultinomialNaiveBayesClassifier {
         trainingSet = new ArrayList<>();
     }
 
+    @Override
+    public String classify(String text) {
+        Map<String, MutableDouble> scores = new HashMap<>();
+        priorProb.forEach((category, score) -> scores.put(category, new MutableDouble(score)));
+        for (String word : Utils.tokenize(text)) {
+            Map<String, Double> categoryCondProb = condProb.get(word);
+            if (categoryCondProb != null) {
+                categoryCondProb.forEach((category, score) -> scores.get(category).add(score));
+            }
+        }
+        // Return the category with the highest score
+        return scores.entrySet().stream()
+                .max((entry1, entry2) -> entry1.getValue().doubleValue() > entry2.getValue().doubleValue() ? 1 : -1)
+                .get()
+                .getKey();
+    }
+
+    @Override
     public void add(Document document) {
         trainingSet.add(document);
     }
 
+    @Override
     public void addAll(Collection<Document> documents) {
         documents.forEach(this::add);
     }
 
+    @Override
     public void train() {
         init();
         trainingSet.forEach(document -> {
             addDocument(document.getCategory());
             document.getTokens().forEach((word, count) -> addWord(word, document.getCategory(), count.intValue()));
         });
-        featureSelection(false, true);
+        featureSelection(true, true);
         calculate();
         release();
-    }
-
-    public String classify(String text) {
-        Map<String, MutableDouble> scores = new HashMap<>();
-        priorProb.forEach((category, score) -> scores.put(category, new MutableDouble(score)));
-        for (String word : FileUtils.tokenize(text)) {
-            Map<String, Double> categoryCondProb = condProb.get(word);
-            if (categoryCondProb != null) {
-                categoryCondProb.forEach((category, score) -> scores.get(category).add(score));
-            }
-        }
-        // Return the class with the highest score
-        return scores.entrySet().stream()
-                .max((entry1, entry2) -> entry1.getValue().doubleValue() > entry2.getValue().doubleValue() ? 1 : -1)
-                .get()
-                .getKey();
     }
 
     private void init() {
@@ -100,7 +106,7 @@ public class MultinomialNaiveBayesClassifier {
     }
 
     private void stopWords() {
-        for (String word : FileUtils.fileToString("db/common-english-words.txt").split(",")) {
+        for (String word : Utils.fileToString("db/common-english-words.txt").split(",")) {
             vocabulary.remove(word);
         }
     }
@@ -172,15 +178,17 @@ public class MultinomialNaiveBayesClassifier {
         });
     }
 
-    public List<Document> getTrainingSet() {
-        return trainingSet;
-    }
-
+    @Override
     public Set<String> getCategories() {
         if (priorProb != null) {
             return priorProb.keySet();
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<Document> getTrainingSet() {
+        return trainingSet;
     }
 }

@@ -1,7 +1,7 @@
 package applying;
 
 import classifier.Classifier;
-import classifier.TempDocument;
+import model.Document;
 
 import java.io.Serializable;
 import java.util.*;
@@ -61,17 +61,23 @@ public class Applier implements Serializable {
         return texts;
     }
 
-    public void train(TempDocument document) {
+    public void train(Document document) {
         classifier.add(document);
+        classifier.train();
     }
 
-    public void trainAll(Collection<TempDocument> documents) {
+    public void trainAll(Collection<Document> documents) {
         classifier.addAll(documents);
+        classifier.train();
     }
 
-    public void delete(String className) {
-        classifier.delete(className);
+    public void delete(String category) {
+        for (Iterator<Document> iterator = classifier.getTrainingSet().iterator(); iterator.hasNext(); ) {
+            if (category.equals(iterator.next().getCategory())) {
+                iterator.remove();
+            }
+        }
         reClassify();
-        documents.remove(className);
+        documents.remove(category);
     }
 }

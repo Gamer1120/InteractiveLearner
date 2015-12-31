@@ -1,24 +1,25 @@
-package classifier;
+package model;
 
-import fileparser.FileUtils;
+import utils.Utils;
 import utils.MutableInt;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Document {
-    private Map<String, MutableInt> tokens;
+public class Document implements Serializable {
+    private final Map<String, MutableInt> tokens;
     private String category;
 
     public Document() {
         this(null);
     }
 
-    public Document(String category) {
-        this(category, null);
+    public Document(String text) {
+        this(text, null);
     }
 
-    public Document(String category, String text) {
+    public Document(String text, String category) {
         this.category = category;
         tokens = new HashMap<>();
         if (text != null) {
@@ -45,7 +46,7 @@ public class Document {
     }
 
     public void addText(String text) {
-        for (String token : FileUtils.tokenize(text)) {
+        for (String token : Utils.tokenize(text)) {
             addToken(token);
         }
     }

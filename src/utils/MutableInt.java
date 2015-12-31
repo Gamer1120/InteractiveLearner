@@ -76,4 +76,24 @@ public class MutableInt extends Number {
     public double doubleValue() {
         return value;
     }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MutableInt) {
+            return value == ((MutableInt) obj).intValue();
+        } else {
+            return super.equals(obj);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public String toString() {
+        return Integer.toString(value);
+    }
 }

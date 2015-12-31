@@ -2,8 +2,8 @@ package ui;
 
 import applying.Applier;
 import applying.BlogApplier;
-import classifier.TempDocument;
-import classifier.TempMultinomialNaiveBayesClassifier;
+import classifier.MultinomialNaiveBayesClassifier;
+import model.Document;
 import utils.Utils;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class ApplierTUI extends Thread {
             applier = Utils.readApplier(Utils.FILE_NAME);
             System.out.println("Applier read successfully");
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
-            applier = BlogApplier.apply(new TempMultinomialNaiveBayesClassifier());
+            applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
             System.out.println("Using new applier");
         }
 
@@ -136,7 +136,7 @@ public class ApplierTUI extends Thread {
                     if (line.length == 1) {
                         if (applier.getDocuments().keySet().contains(line[0])) {
                             String classification = line[0];
-                            TempDocument document = new TempDocument(currentDocument, classification);
+                            Document document = new Document(currentDocument, classification);
                             do {
                                 applier.train(document);
                             } while (!applier.reClassify());
@@ -153,7 +153,7 @@ public class ApplierTUI extends Thread {
                     break;
                 case NEWCATEGORY:
                     if (line.length == 1) {
-                        TempDocument document = new TempDocument(currentDocument, line[0]);
+                        Document document = new Document(currentDocument, line[0]);
                         do {
                             applier.train(document);
                         } while (!applier.reClassify());
