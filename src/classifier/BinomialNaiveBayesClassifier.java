@@ -4,20 +4,19 @@ import utils.MutableDouble;
 import utils.MutableInt;
 import utils.Utils;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
+public class BinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
 
     /**
-     * A Multinomial implementation of the Naive Bayes base.
+     * A Binomial implementation of the Naive Bayes base.
      */
-    public MultinomialNaiveBayesClassifier() {
+    public BinomialNaiveBayesClassifier() {
         super();
         stopWords = true;
-        wordCount = true;
-        chiSquare = true;
-        minCount = 4;
+        wordCount = false;
+        chiSquare = false;
+        minCount = 1;
         maxCount = 100;
     }
 
@@ -30,16 +29,21 @@ public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
         Map<String, MutableDouble> scores = new HashMap<>();
         // Use the prior probability as the initial score for each category
         priorProb.forEach((category, score) -> scores.put(category, new MutableDouble(score)));
-        // For every word in the text
-        for (String word : Utils.tokenize(text)) {
-            // Get the map of categories and the conditional probability of the word occurring in that category
-            Map<String, Double> categoryCondProb = condProb.get(word);
-            // If the word is in the vocabulary
-            if (categoryCondProb != null) {
-                // Add the conditional probability of the word to the score for every category
-                categoryCondProb.forEach((category, score) -> scores.get(category).add(score));
+        // A set of all unique words in the text
+        Set<String> words = new HashSet<>();
+        // Add all words in the text to the set
+        Collections.addAll(words, Utils.tokenize(text));
+        // For every known word and for every category
+        condProb.forEach((word, categoryCondProb) -> categoryCondProb.forEach((category, score) -> {
+            // If the word is in the text
+            if (words.contains(word)) {
+                // Add the score to the category
+                scores.get(category).add(Math.log(score));
+            } else {
+                // Add one minus the score to the category
+                scores.get(category).add(Math.log(1d - score));
             }
-        }
+        }));
         // Return the category with the highest score
         return scores.entrySet().stream()
                 .max((entry1, entry2) -> entry1.getValue().doubleValue() > entry2.getValue().doubleValue() ? 1 : -1)
@@ -57,7 +61,7 @@ public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
             // Add the document to the category
             addDocument(document.getCategory());
             // Add all the words of the document to the vocabulary
-            document.getTokens().forEach((word, count) -> addWord(word, document.getCategory(), count.intValue()));
+            document.getTokens().keySet().forEach(word -> addWord(word, document.getCategory(), 1));
         });
     }
 
@@ -66,13 +70,6 @@ public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
      */
     @Override
     protected void calculateCondProb(String category) {
-        MutableInt words = new MutableInt();
-        vocabulary.values().forEach(categoryCount -> {
-            MutableInt count = categoryCount.get(category);
-            if (count != null) {
-                words.add(count.intValue());
-            }
-        });
         vocabulary.forEach((word, wordCategoryCount) -> {
             Map<String, Double> categoryCondProb = condProb.get(word);
             if (categoryCondProb == null) {
@@ -81,7 +78,8 @@ public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
             }
             MutableInt categoryCount = wordCategoryCount.get(category);
             int count = categoryCount == null ? 0 : categoryCount.intValue();
-            double prob = Math.log((double) (count + 1) / (double) (words.intValue() + vocabulary.size()));
+            int documents = categories.get(category).intValue();
+            double prob = (double) (count + 1) / (double) (documents + categories.size());
             categoryCondProb.put(category, prob);
         });
     }
