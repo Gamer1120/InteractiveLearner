@@ -191,9 +191,8 @@ public class ApplierController implements Initializable {
     private void train(String classification, String text) {
         if (classification != null && text != null && !"".equals(classification) && !"".equals(text)) {
             Document document = new Document(text, classification);
-            do {
-                applier.train(document);
-            } while (!applier.reClassify());
+            applier.train(document);
+            applier.reClassify();
             setClasses();
         }
     }

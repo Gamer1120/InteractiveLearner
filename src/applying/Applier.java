@@ -20,7 +20,6 @@ public class Applier implements Serializable {
     }
 
     public boolean reClassify() {
-        classifier.train();
         Map<String, List<String>> tempDocuments = new HashMap<>();
         documents.forEach((oldCategory, texts) -> {
             for (Iterator<String> it = texts.iterator(); it.hasNext(); ) {
@@ -65,10 +64,12 @@ public class Applier implements Serializable {
 
     public void train(Document document) {
         classifier.add(document);
+        classifier.train();
     }
 
     public void trainAll(Collection<Document> documents) {
         classifier.addAll(documents);
+        classifier.train();
     }
 
     public void delete(String category) {
@@ -77,6 +78,7 @@ public class Applier implements Serializable {
                 iterator.remove();
             }
         }
+        classifier.train();
         reClassify();
         documents.remove(category);
     }
