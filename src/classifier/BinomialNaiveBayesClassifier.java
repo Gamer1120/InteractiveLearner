@@ -14,9 +14,9 @@ public class BinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
     public BinomialNaiveBayesClassifier() {
         super();
         stopWords = true;
-        wordCount = false;
+        wordCount = true;
         chiSquare = false;
-        minCount = 1;
+        minCount = 4;
         maxCount = 100;
     }
 
@@ -70,16 +70,24 @@ public class BinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
      */
     @Override
     protected void calculateCondProb(String category) {
+        // For every word in the vocabulary
         vocabulary.forEach((word, wordCategoryCount) -> {
+            // Get the map of conditional probabilities for the word
             Map<String, Double> categoryCondProb = condProb.get(word);
+            // Create and add a new map if it doesn't exists
             if (categoryCondProb == null) {
                 categoryCondProb = new HashMap<>(priorProb.size());
                 condProb.put(word, categoryCondProb);
             }
+            // Get how many times the word occurred in the category
             MutableInt categoryCount = wordCategoryCount.get(category);
+            // Store the amount of times the word occurred, or zero if it didn't occur
             int count = categoryCount == null ? 0 : categoryCount.intValue();
+            // Get the amount of documents this category has
             int documents = categories.get(category).intValue();
+            // Calculate the conditional probability
             double prob = (double) (count + 1) / (double) (documents + categories.size());
+            // Add the category and the conditional probability to the map of conditional probabilities
             categoryCondProb.put(category, prob);
         });
     }

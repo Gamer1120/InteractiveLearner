@@ -13,16 +13,14 @@ import java.util.Scanner;
 
 public class ApplierTUI extends Thread {
 
-    private boolean loop = true;
     private Applier applier;
     private Status status;
     private String currentDocument;
 
     public ApplierTUI() {
-
         status = Status.STARTING;
         init();
-        showMainMenu();
+        start();
     }
 
     public static void main(String[] args) {
@@ -31,17 +29,15 @@ public class ApplierTUI extends Thread {
 
     public void init() {
         try {
-            applier = Utils.readApplier(Utils.FILE_NAME);
+            applier = Utils.readApplier();
             System.out.println("Applier read successfully");
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
             applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
             System.out.println("Using new applier");
         }
-
-        start();
     }
 
-    public void showMainMenu() {
+    private void showMainMenu() {
         System.out.println("The following classes are in the current set: ");
         Map<String, List<String>> documents = applier.getDocuments();
         String example = "";
@@ -56,30 +52,31 @@ public class ApplierTUI extends Thread {
         status = Status.MAINMENU;
     }
 
-    public void showReviewMenu(String classification) {
+    private void showReviewMenu(String classification) {
         System.out.println("This document was classified as " + classification + ". Would you like to change it? [y/N]");
         status = Status.REVIEWING;
     }
 
-    public void showClassificationMenu() {
+    private void showClassificationMenu() {
         System.out.println("What would you like to classify this document as? Your options are:");
         applier.getDocuments().keySet().forEach(System.out::println);
         System.out.println("or type new to create a new category.");
         status = Status.CLASSIFYING;
     }
 
-    public void showNewCategory() {
+    private void showNewCategory() {
         System.out.println("What would you like the name of the new category to be?");
         status = Status.NEWCATEGORY;
     }
 
     public void run() {
+        showMainMenu();
         Scanner scan = new Scanner(System.in);
-        while (loop) {
+        while (true) {
             String[] line = scan.nextLine().split(" ");
             if (line.length == 1 && line[0].toLowerCase().equals("exit")) {
                 try {
-                    Utils.writeApplier(applier, Utils.FILE_NAME);
+                    Utils.writeApplier(applier);
                     System.out.println("Applier successfully saved");
                     System.exit(0);
                 } catch (IOException e) {

@@ -15,21 +15,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Utils {
-    public static final String FILE_NAME = "applier.obj";
+    private static final String FILE_NAME = "applier.obj";
     private static final String ENCODING = "UTF-8";
 
     /**
      * Reads the applier from the specified location.
      *
-     * @param location - the specified location
      * @return the applier
      * @throws IOException
      * @throws ClassNotFoundException
      * @throws ClassCastException
      */
-    public static Applier readApplier(String location) throws IOException, ClassNotFoundException, ClassCastException {
+    public static Applier readApplier() throws IOException, ClassNotFoundException, ClassCastException {
         // Create an input stream
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(location));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_NAME));
         // Read the applier
         Applier applier = (Applier) in.readObject();
         // Close the input stream
@@ -41,12 +40,11 @@ public class Utils {
      * Write the applier to the specified location.
      *
      * @param applier  - the applier
-     * @param location - the specified location
      * @throws IOException
      */
-    public static void writeApplier(Applier applier, String location) throws IOException {
+    public static void writeApplier(Applier applier) throws IOException {
         // Create an output stream
-        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(location));
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_NAME));
         // Write the applier
         out.writeObject(applier);
         // Close the output stream
@@ -61,10 +59,10 @@ public class Utils {
      * @return all documents as a list
      */
     public static List<Document> toDocuments(Collection<String> strings, String category) {
-        // For all texts
+        // For all strings
         return strings.stream()
-                // Create a document with the text and classification
-                .map(text -> new Document(text, category))
+                // Create a document with the string and category
+                .map(string -> new Document(string, category))
                 // Collect the documents as list
                 .collect(Collectors.toList());
     }
@@ -81,7 +79,7 @@ public class Utils {
         return strings.stream()
                 // Create a text with the string and category
                 .map(string -> new Text(string, category))
-                // Collect the documents as list
+                // Collect the texts as list
                 .collect(Collectors.toList());
     }
 
@@ -101,7 +99,7 @@ public class Utils {
                     .map(File::getPath)
                     // Read the file
                     .map(Utils::fileToString)
-                    // Collect the texts as list
+                    // Collect the files as list
                     .collect(Collectors.toList());
         } else {
             // No files found, return an empty list
@@ -118,17 +116,19 @@ public class Utils {
     public static String fileToString(String path) {
         byte[] bytes;
         try {
-            // Try to read all bytes of the file.
+            // Try to read all bytes of the file
             bytes = Files.readAllBytes(Paths.get(path));
         } catch (IOException e) {
             e.printStackTrace();
             return "";
         }
         try {
-            // Create a String out of those bytes.
+            // Create a String out of the bytes with the specified encoding
             return new String(bytes, ENCODING);
         } catch (UnsupportedEncodingException e) {
+            // Can't use the specified encoding
             e.printStackTrace();
+            // Create a String out of the bytes with the standard encoding
             return new String(bytes);
         }
     }
@@ -140,10 +140,13 @@ public class Utils {
      * @return the tokenized and normalized String
      */
     public static String[] tokenize(String line) {
-        // Normalize the String, make the String lowercase, remove all non-alphabetic characters, and tokenize the String.
+        // Normalize the String
         return Normalizer.normalize(line, Normalizer.Form.NFD)
+                // Make the String lowercase
                 .toLowerCase()
+                // Remove all non-alphabetic characters
                 .replaceAll("[^ a-z]", "")
+                // Tokenize the String
                 .split("\\s+");
     }
 }

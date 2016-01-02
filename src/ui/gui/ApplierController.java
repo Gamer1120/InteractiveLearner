@@ -62,7 +62,7 @@ public class ApplierController implements Initializable {
     private static Applier readApplier() {
         Applier applier;
         try {
-            applier = Utils.readApplier(Utils.FILE_NAME);
+            applier = Utils.readApplier();
             System.out.println("Applier read successfully");
         } catch (IOException | ClassNotFoundException | ClassCastException e) {
             applier = BlogApplier.apply(new MultinomialNaiveBayesClassifier());
@@ -73,7 +73,7 @@ public class ApplierController implements Initializable {
 
     private static void writeApplier(Applier applier) {
         try {
-            Utils.writeApplier(applier, Utils.FILE_NAME);
+            Utils.writeApplier(applier);
             System.out.println("Applier written successfully");
         } catch (IOException e) {
             System.out.println("Couldn't write applier");

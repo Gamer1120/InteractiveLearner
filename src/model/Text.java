@@ -5,7 +5,7 @@ public class Text {
     private String category;
 
     /**
-     * A document consisting of text.
+     * A document consisting of a text.
      *
      * @param text - the text of the document
      */
@@ -14,7 +14,7 @@ public class Text {
     }
 
     /**
-     * A document consisting of text and a category.
+     * A document consisting of a text and a category.
      *
      * @param text     - the text of the document
      * @param category - the category

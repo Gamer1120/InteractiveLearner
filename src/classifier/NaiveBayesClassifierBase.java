@@ -29,9 +29,9 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /* Used in feature selection */
     // Which feature selection methods to use
     protected boolean stopWords, wordCount, chiSquare;
-    // Minimum an maximum amount of times a word may occur
+    // Minimum an maximum amount of times a word may occur when using word count feature selection
     protected int minCount, maxCount;
-    // Chi-square critical value
+    // Chi-square critical value when using chi-square feature selection
     protected double criticalValue;
 
     /**
@@ -86,7 +86,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /**
      * Initializes the variables used during training.
      */
-    protected void init() {
+    private void init() {
         categories = new HashMap<>();
         vocabulary = new HashMap<>();
         documents = 0;
@@ -95,7 +95,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /**
      * Releases the variables used during training.
      */
-    protected void release() {
+    private void release() {
         categories = null;
         vocabulary = null;
     }
@@ -154,7 +154,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /**
      * Apply the specified feature selection methods.
      */
-    protected void featureSelection() {
+    private void featureSelection() {
         if (stopWords) {
             stopWords();
         }
@@ -169,7 +169,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /**
      * Remove all stop words from the vocabulary.
      */
-    protected void stopWords() {
+    private void stopWords() {
         // For every stop word
         for (String word : Utils.fileToString("db/common-english-words.txt").split(",")) {
             // Remove it form the vocabulary
@@ -180,7 +180,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /**
      * Remove rare and common words.
      */
-    protected void wordCount() {
+    private void wordCount() {
         // For every word in the vocabulary
         for (Iterator<Map.Entry<String, Map<String, MutableInt>>> iterator = vocabulary.entrySet().iterator(); iterator.hasNext(); ) {
             // Total amount of times the word occurred
@@ -201,7 +201,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /**
      * Remove all words with a chi-square value below the critical value from the vocabulary.
      */
-    protected void chiSquare() {
+    private void chiSquare() {
         // For every word in the vocabulary
         for (Iterator<Map.Entry<String, Map<String, MutableInt>>> iterator = vocabulary.entrySet().iterator(); iterator.hasNext(); ) {
             // Get the map of categories and how many times the word occurred in that category
@@ -244,31 +244,62 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /**
      * Calculate all the prior and conditional probabilities
      */
-    protected void calculate() {
+    private void calculate() {
+        // Initialize the maps
         priorProb = new HashMap<>(categories.size());
         condProb = new HashMap<>(vocabulary.size());
+        // For every category
         categories.forEach(((category, count) -> {
+            // Calculate the prior probability
             calculatePriorProb(category, count.intValue());
+            // Calculate the conditional probability for all words in the vocabulary
             calculateCondProb(category);
         }));
     }
 
-    protected void calculatePriorProb(String category, int count) {
+    /**
+     * Calculate the prior probability for the given category.
+     *
+     * @param category - the category
+     * @param count    - the amount of documents the category has
+     */
+    private void calculatePriorProb(String category, int count) {
+        // Calculate the prior probability
         double prob = Math.log((double) count / (double) documents);
+        // Add it to the map
         priorProb.put(category, prob);
     }
 
+    /**
+     * Calculate the conditional probability for the given category for all words in the vocabulary.
+     *
+     * @param category - the category
+     */
     protected abstract void calculateCondProb(String category);
 
+    /**
+     * Get the known categories.
+     * The classifier has to be trained before it knows any categories.
+     *
+     * @return a set of all the known categories, or an empty set if the classifier hasn't been trained yet
+     */
     @Override
     public Set<String> getCategories() {
+        // If the classifier has been trained
         if (priorProb != null) {
+            // Return all known categories
             return priorProb.keySet();
         } else {
-            return null;
+            // Return an empty set
+            return Collections.emptySet();
         }
     }
 
+    /**
+     * Get the training set
+     *
+     * @return a list of all documents in the training set
+     */
     @Override
     public List<Document> getTrainingSet() {
         return trainingSet;

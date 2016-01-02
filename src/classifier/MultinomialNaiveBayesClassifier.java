@@ -66,22 +66,34 @@ public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
      */
     @Override
     protected void calculateCondProb(String category) {
+        // Count all the words in the category
         MutableInt words = new MutableInt();
+        // For every word in the vocabulary
         vocabulary.values().forEach(categoryCount -> {
+            // Get how many times the word occurred in the category
             MutableInt count = categoryCount.get(category);
+            // If the word occurred
             if (count != null) {
+                // Add it to the word count
                 words.add(count.intValue());
             }
         });
+        // For every word in the vocabulary
         vocabulary.forEach((word, wordCategoryCount) -> {
+            // Get the map of conditional probabilities for the word
             Map<String, Double> categoryCondProb = condProb.get(word);
+            // Create and add a new map if it doesn't exists
             if (categoryCondProb == null) {
                 categoryCondProb = new HashMap<>(priorProb.size());
                 condProb.put(word, categoryCondProb);
             }
+            // Get how many times the word occurred in the category
             MutableInt categoryCount = wordCategoryCount.get(category);
+            // Store the amount of times the word occurred, or zero if it didn't occur
             int count = categoryCount == null ? 0 : categoryCount.intValue();
+            // Calculate the conditional probability
             double prob = Math.log((double) (count + 1) / (double) (words.intValue() + vocabulary.size()));
+            // Add the category and the conditional probability to the map of conditional probabilities
             categoryCondProb.put(category, prob);
         });
     }
