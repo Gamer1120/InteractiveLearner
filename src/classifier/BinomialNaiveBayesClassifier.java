@@ -16,8 +16,8 @@ public class BinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
         stopWords = true;
         wordCount = true;
         chiSquare = false;
-        minPercent = 2.0E-5d;
-        maxPercent = 5.0E-4d;
+        minPercent = 0.01d;
+        maxPercent = 0.6d;
         criticalValue = 10.83d;
     }
 

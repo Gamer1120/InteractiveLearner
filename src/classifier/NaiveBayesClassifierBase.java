@@ -31,7 +31,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /* Used in feature selection */
     // Which feature selection methods to use
     protected boolean stopWords, wordCount, chiSquare;
-    // Minimum and maximum percentage of the total amount of observed words a word may occur when using word count feature selection
+    // Minimum and maximum percentage of times a word may occur when using word count feature selection
     protected double minPercent, maxPercent;
     // Chi-square critical value when using chi-square feature selection
     protected double criticalValue;
@@ -186,7 +186,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
      */
     private void wordCount() {
         // Calculate the minimum and maximum amount of times a word may occur
-        int minCount = (int) Math.floor(minPercent * words), maxCount = (int) Math.ceil(maxPercent * words);
+        int minCount = (int) Math.floor(minPercent * words / documents), maxCount = (int) Math.ceil(maxPercent * words / documents);
         // For every word in the vocabulary
         for (Iterator<Map.Entry<String, Map<String, MutableInt>>> iterator = vocabulary.entrySet().iterator(); iterator.hasNext(); ) {
             // Total amount of times the word occurred
