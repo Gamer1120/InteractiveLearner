@@ -17,8 +17,9 @@ public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
         stopWords = true;
         wordCount = true;
         chiSquare = true;
-        minCount = 4;
-        maxCount = 100;
+        minPercent = 2E-5d;
+        maxPercent = 5E-4d;
+        criticalValue = 10.83d;
     }
 
     /**

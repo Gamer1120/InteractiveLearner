@@ -18,7 +18,9 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     // Map of words with a map of categories and how many times the word occurred in that category
     protected Map<String, Map<String, MutableInt>> vocabulary;
     // Total amount of observed documents
-    protected int documents;
+    private int documents;
+    // Total amount of observed words
+    private int words;
 
     /* Generated after training */
     // Map of categories and their prior probabilities
@@ -29,8 +31,8 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     /* Used in feature selection */
     // Which feature selection methods to use
     protected boolean stopWords, wordCount, chiSquare;
-    // Minimum an maximum amount of times a word may occur when using word count feature selection
-    protected int minCount, maxCount;
+    // Minimum and maximum percentage of the total amount of observed words a word may occur when using word count feature selection
+    protected double minPercent, maxPercent;
     // Chi-square critical value when using chi-square feature selection
     protected double criticalValue;
 
@@ -39,7 +41,6 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
      */
     public NaiveBayesClassifierBase() {
         trainingSet = new ArrayList<>();
-        criticalValue = 10.83;
     }
 
     /**
@@ -90,6 +91,7 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
         categories = new HashMap<>();
         vocabulary = new HashMap<>();
         documents = 0;
+        words = 0;
     }
 
     /**
@@ -131,6 +133,8 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
      * @param count    - the amount of times the word occurred
      */
     protected void addWord(String word, String category, int count) {
+        // Add one to the total word count
+        words++;
         // Get the map of categories and how many times the word occurred in that category
         Map<String, MutableInt> wordCategoryCount = vocabulary.get(word);
         // If the word doesn't exists
@@ -181,6 +185,8 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
      * Remove rare and common words.
      */
     private void wordCount() {
+        // Calculate the minimum and maximum amount of times a word may occur
+        int minCount = (int) Math.floor(minPercent * words), maxCount = (int) Math.ceil(maxPercent * words);
         // For every word in the vocabulary
         for (Iterator<Map.Entry<String, Map<String, MutableInt>>> iterator = vocabulary.entrySet().iterator(); iterator.hasNext(); ) {
             // Total amount of times the word occurred
