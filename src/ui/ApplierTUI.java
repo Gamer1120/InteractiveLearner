@@ -102,12 +102,16 @@ public class ApplierTUI extends Thread {
     private void mainMenuCommand(String[] command) {
         if (command.length == 2) {
             if (command[0].equalsIgnoreCase("remove")) {
-                if (applier.getDocuments().keySet().contains(command[1])) {
-                    applier.delete(command[1]);
-                    System.out.println("Successfully removed class.");
-                    showMainMenu();
+                if (applier.getDocuments().keySet().size() > 1) {
+                    if (applier.getDocuments().keySet().contains(command[1])) {
+                        applier.delete(command[1]);
+                        System.out.println("Successfully removed class.");
+                        showMainMenu();
+                    } else {
+                        System.out.println("That's not a classification.");
+                    }
                 } else {
-                    System.out.println("That's not a classification.");
+                    System.out.println("There has to be at least one classification. Please add a classification before removing one.");
                 }
             } else {
                 List<String> documents = applier.getDocuments().get(command[0]);
@@ -167,12 +171,12 @@ public class ApplierTUI extends Thread {
 
     private void classificationMenuCommand(String[] command) {
         if (command.length == 1) {
-            if (applier.getDocuments().keySet().contains(command[0])) {
+            if (command[0].equals("new")) {
+                showNewCategory();
+            } else if (applier.getDocuments().keySet().contains(command[0])) {
                 train(command[0]);
                 System.out.println("Classification updated! Please note that it may take multiple times before a document becomes classified as your chosen classification.");
                 showMainMenu();
-            } else if (command[0].equals("new")) {
-                showNewCategory();
             } else {
                 System.out.println("That's not a valid classification.");
             }
@@ -187,10 +191,18 @@ public class ApplierTUI extends Thread {
     }
 
     private void newCategoryCommand(String[] command) {
-        if (command.length == 1) {
-            train(command[0]);
-            System.out.println("Category created and classification updated! Please note that it may take multiple times before a document becomes classified as your chosen classification.");
-            showMainMenu();
+        if (command.length == 1 && command[0].length() > 0) {
+            if (!applier.getDocuments().keySet().contains(command[0])) {
+                if (!"new".equalsIgnoreCase(command[0])) {
+                    train(command[0]);
+                    System.out.println("Category created and classification updated! Please note that it may take multiple times before a document becomes classified as your chosen classification.");
+                    showMainMenu();
+                } else {
+                    System.out.println("You can't create a category with this name.");
+                }
+            } else {
+                System.out.println("This category already exists.");
+            }
         } else {
             System.out.println("Please use one word as the name for the category.");
         }
