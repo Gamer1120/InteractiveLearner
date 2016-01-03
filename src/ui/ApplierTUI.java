@@ -104,6 +104,8 @@ public class ApplierTUI extends Thread {
             if (command[0].equalsIgnoreCase("remove")) {
                 if (applier.getDocuments().keySet().contains(command[1])) {
                     applier.delete(command[1]);
+                    System.out.println("Successfully removed class.");
+                    showMainMenu();
                 } else {
                     System.out.println("That's not a classification.");
                 }
