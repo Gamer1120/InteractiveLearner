@@ -6,8 +6,6 @@ import java.io.PrintWriter;
 
 public class FileWriter {
 
-    // The File to write to
-    private File file;
     // The PrintWriter that is used to write to the file
     private PrintWriter writer;
 
@@ -18,7 +16,8 @@ public class FileWriter {
      * @param filename the filename of the File.
      */
     public FileWriter(String filename) {
-        file = new File(filename);
+        // The File to write to
+        File file = new File(filename);
         try {
             writer = new PrintWriter(file);
         } catch (FileNotFoundException e) {
@@ -29,16 +28,17 @@ public class FileWriter {
     /**
      * Closes the file. Should be called when done writing to it.
      */
-    public void close(){
+    public void close() {
         writer.close();
     }
 
     /**
      * Writes a formatted chiSquare output to a file
-     * @param word the word to be written.
+     *
+     * @param word      the word to be written.
      * @param chiSquare the chiSquare value for that word.
      */
-    public void write(String word, double chiSquare){
+    public void write(String word, double chiSquare) {
         writer.write(word + ": " + chiSquare + "\n");
     }
 }
