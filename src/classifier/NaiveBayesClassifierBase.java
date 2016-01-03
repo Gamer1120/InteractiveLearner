@@ -1,13 +1,17 @@
 package classifier;
 
 import model.Document;
+import utils.FileWriter;
 import utils.MutableInt;
 import utils.Utils;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
 public abstract class NaiveBayesClassifierBase implements Classifier, Serializable {
+    private static final boolean WRITE = true;
+
     /* Used for training */
     // List of documents used for training
     protected final List<Document> trainingSet;
@@ -211,10 +215,17 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
      * Remove all words with a chi-square value below the critical value from the vocabulary.
      */
     private void chiSquare() {
+        FileWriter fileWriter;
+        if (WRITE) {
+            // Create a file writer
+            fileWriter = new FileWriter("chi-words.txt");
+        }
         // For every word in the vocabulary
         for (Iterator<Map.Entry<String, Map<String, MutableInt>>> iterator = vocabulary.entrySet().iterator(); iterator.hasNext(); ) {
+            // Get the vocabulary entry for this word
+            Map.Entry<String, Map<String, MutableInt>> wordEntry = iterator.next();
             // Get the map of categories and how many times the word occurred in that category
-            Map<String, MutableInt> wordCategoryCount = iterator.next().getValue();
+            Map<String, MutableInt> wordCategoryCount = wordEntry.getValue();
             int N0dot, N1dot, N00, N01, N10, N11;
             double maxScore = 0;
             // Count the number of documents that have the word
@@ -225,10 +236,10 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
             // Calculate the number of documents that don't have the word
             N0dot = documents - N1dot;
             // For every category
-            for (Map.Entry<String, MutableInt> entry : wordCategoryCount.entrySet()) {
-                String category = entry.getKey();
+            for (Map.Entry<String, MutableInt> categoryEntry : wordCategoryCount.entrySet()) {
+                String category = categoryEntry.getKey();
                 // Number of documents that have the word and belong on the category
-                N11 = entry.getValue().intValue();
+                N11 = categoryEntry.getValue().intValue();
                 // Number of documents that don't have the word but belong to the category
                 N01 = categories.get(category).intValue() - N11;
                 // Number of documents that don't have the word and don't belong to the category
@@ -246,6 +257,17 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
             if (maxScore < criticalValue) {
                 // Remove the word
                 iterator.remove();
+            } else if (WRITE) {
+                // Add the word and chi-square value to the file writer
+                fileWriter.add(wordEntry.getKey(), maxScore);
+            }
+        }
+        if (WRITE) {
+            try {
+                // Write the file
+                fileWriter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

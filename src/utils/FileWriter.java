@@ -1,44 +1,43 @@
 package utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileWriter {
-
-    // The PrintWriter that is used to write to the file
-    private PrintWriter writer;
+    private final List<String> lines;
+    private final Path path;
 
     /**
-     * Creates a new FileWriter object, opening a File and creating a writer to that File.
-     * This class is used to write chiSquare values to a File without opening and closing it thousands of times.
+     * Creates a new FileWriter object, with a list of lines and a path to write to.
+     * This class is used to write chiSquare values to a File.
      *
-     * @param filename the filename of the File.
+     * @param path - the path to the File
      */
-    public FileWriter(String filename) {
-        // The File to write to
-        File file = new File(filename);
-        try {
-            writer = new PrintWriter(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public FileWriter(String path) {
+        this.path = Paths.get(path);
+        lines = new ArrayList<>();
     }
 
     /**
-     * Closes the file. Should be called when done writing to it.
+     * Adds a formatted chiSquare output to the list of lines
+     *
+     * @param word      - the word to be written
+     * @param chiSquare - the chiSquare value for that word
      */
-    public void close() {
-        writer.close();
+    public void add(String word, double chiSquare) {
+        lines.add(word + ": " + chiSquare);
     }
 
     /**
-     * Writes a formatted chiSquare output to a file
+     * Writes the list of lines to the path.
      *
-     * @param word      the word to be written.
-     * @param chiSquare the chiSquare value for that word.
+     * @throws IOException - if the write operation failed
      */
-    public void write(String word, double chiSquare) {
-        writer.write(word + ": " + chiSquare + "\n");
+    public void flush() throws IOException {
+        Files.write(path, lines);
     }
 }
