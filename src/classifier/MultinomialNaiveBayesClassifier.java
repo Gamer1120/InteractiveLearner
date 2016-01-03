@@ -7,19 +7,24 @@ import utils.Utils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A Multinomial implementation of the Naive Bayes base.
+ */
 public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
 
     /**
-     * A Multinomial implementation of the Naive Bayes base.
+     * Constructs the classifier with default values
      */
     public MultinomialNaiveBayesClassifier() {
-        super();
-        stopWords = true;
-        wordCount = true;
-        chiSquare = true;
-        minPercent = 0.01d;
-        maxPercent = 0.7d;
-        criticalValue = 10.83d;
+        super(true, true, true, 0.01d, 0.7d, 10.83d);
+    }
+
+    /**
+     * Constructs the classifier with the specified values
+     */
+    public MultinomialNaiveBayesClassifier(boolean stopWords, boolean wordCount, boolean chiSquare,
+                                           double minPercent, double maxPercent, double criticalValue) {
+        super(stopWords, wordCount, chiSquare, minPercent, maxPercent, criticalValue);
     }
 
     /**

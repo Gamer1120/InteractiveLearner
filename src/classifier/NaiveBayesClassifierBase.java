@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * A base class for a Naive Bayes implementation of the classifier.
+ */
 public abstract class NaiveBayesClassifierBase implements Classifier, Serializable {
     // Write the chi-square values to a file if true
     private static final boolean WRITE = true;
@@ -42,10 +45,24 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     protected double criticalValue;
 
     /**
-     * A base class for a Naive Bayes implementation of the classifier.
+     * Constructs the base with the default values.
      */
     public NaiveBayesClassifierBase() {
+        this(false, false, false, 0d, 1d, 0d);
+    }
+
+    /**
+     * Constructs the base with the specified values.
+     */
+    public NaiveBayesClassifierBase(boolean stopWords, boolean wordCount, boolean chiSquare,
+                                    double minPercent, double maxPercent, double criticalValue) {
         trainingSet = new ArrayList<>();
+        this.stopWords = stopWords;
+        this.wordCount = wordCount;
+        this.chiSquare = chiSquare;
+        this.minPercent = minPercent;
+        this.maxPercent = maxPercent;
+        this.criticalValue = criticalValue;
     }
 
     /**

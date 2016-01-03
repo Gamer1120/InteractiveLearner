@@ -6,19 +6,24 @@ import utils.Utils;
 
 import java.util.*;
 
+/**
+ * A Binomial implementation of the Naive Bayes base.
+ */
 public class BinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
 
     /**
-     * A Binomial implementation of the Naive Bayes base.
+     * Constructs the classifier with default values
      */
     public BinomialNaiveBayesClassifier() {
-        super();
-        stopWords = true;
-        wordCount = true;
-        chiSquare = false;
-        minPercent = 0.01d;
-        maxPercent = 0.6d;
-        criticalValue = 10.83d;
+        super(true, true, false, 0.01d, 0.6d, 10.83d);
+    }
+
+    /**
+     * Constructs the classifier with the specified values
+     */
+    public BinomialNaiveBayesClassifier(boolean stopWords, boolean wordCount, boolean chiSquare,
+                                        double minPercent, double maxPercent, double criticalValue) {
+        super(stopWords, wordCount, chiSquare, minPercent, maxPercent, criticalValue);
     }
 
     /**
