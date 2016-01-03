@@ -102,6 +102,9 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
         vocabulary = null;
     }
 
+    /**
+     * Add all documents to the categories and add all words to the vocabulary.
+     */
     protected abstract void add();
 
     /**

@@ -43,7 +43,6 @@ public class ApplierTUI extends Thread {
         try {
             Utils.writeApplier(applier);
             System.out.println("Applier successfully saved");
-            System.exit(0);
         } catch (IOException e) {
             System.out.println("Couldn't save applier!");
             e.printStackTrace();
