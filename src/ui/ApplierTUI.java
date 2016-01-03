@@ -59,7 +59,7 @@ public class ApplierTUI extends Thread {
         Scanner scan = new Scanner(System.in);
         while (true) {
             String[] command = scan.nextLine().split("\\s+");
-            if ("exit".equalsIgnoreCase(command[0])) {
+            if (command.length == 1 && "exit".equalsIgnoreCase(command[0])) {
                 writeApplier(applier);
                 break;
             }
@@ -95,29 +95,38 @@ public class ApplierTUI extends Thread {
             }
         }
         System.out.println("Please enter the classification and the number of the document you'd like to review. For example: " + example);
+        System.out.println("If you would like to remove a class, please type \"remove <class>\".");
         status = Status.MAINMENU;
     }
 
     private void mainMenuCommand(String[] command) {
         if (command.length == 2) {
-            List<String> documents = applier.getDocuments().get(command[0]);
-            if (documents != null) {
-                int index;
-                try {
-                    index = Integer.parseInt(command[1]);
-                } catch (NumberFormatException e) {
-                    System.out.println("The second argument wasn't a valid number.");
-                    return;
-                }
-                if (index < documents.size()) {
-                    currentDocument = documents.get(index);
-                    System.out.println(currentDocument);
-                    showReviewMenu(command[0]);
+            if (command[0].equalsIgnoreCase("remove")) {
+                if (applier.getDocuments().keySet().contains(command[1])) {
+                    applier.delete(command[1]);
                 } else {
-                    System.out.println("There aren't that many documents.");
+                    System.out.println("That's not a classification.");
                 }
             } else {
-                System.out.println("That's not a classification.");
+                List<String> documents = applier.getDocuments().get(command[0]);
+                if (documents != null) {
+                    int index;
+                    try {
+                        index = Integer.parseInt(command[1]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("The second argument wasn't a valid number.");
+                        return;
+                    }
+                    if (index < documents.size()) {
+                        currentDocument = documents.get(index);
+                        System.out.println(currentDocument);
+                        showReviewMenu(command[0]);
+                    } else {
+                        System.out.println("There aren't that many documents.");
+                    }
+                } else {
+                    System.out.println("That's not a classification.");
+                }
             }
         } else {
             System.out.println("Wrong number of arguments.");
