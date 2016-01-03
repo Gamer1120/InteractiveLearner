@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public abstract class NaiveBayesClassifierBase implements Classifier, Serializable {
+    // Write the chi-square values to a file if true
     private static final boolean WRITE = true;
 
     /* Used for training */
