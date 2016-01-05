@@ -15,12 +15,24 @@ public class EmailTester {
     public static void main(String[] args) {
         // Create a tester for a multinomial naive bayes classifier
         Tester tester = new Tester(new MultinomialNaiveBayesClassifier());
+        // The start time
+        long start = System.currentTimeMillis();
         // Add the ham class texts
         add(tester, "ham", Utils.readFiles("db/emails/ham"));
         // Add the spam class texts
         add(tester, "spam", Utils.readFiles("db/emails/spam"));
+        // The time after reading the files
+        long read = System.currentTimeMillis();
+        // Train the classifier
+        tester.train();
+        // The time after training
+        long train = System.currentTimeMillis();
         // Execute the test
         tester.test();
+        // The time after testing
+        long end = System.currentTimeMillis();
+        // Print the times
+        System.out.println("Time: Total: " + (end - start) + "ms, Read: " + (read - start) + "ms, Train: " + (train - read) + "ms, Test: " + (end - train) + "ms");
     }
 
     /**

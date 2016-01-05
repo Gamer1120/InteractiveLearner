@@ -63,11 +63,17 @@ public class Tester {
     }
 
     /**
+     * Train the classifier.
+     */
+    public void train() {
+        // Train the classifier
+        classifier.train();
+    }
+
+    /**
      * Tests the classifier using the test set.
      */
     public void test() {
-        // Train the classifier
-        classifier.train();
         // The total amount of correct classifications
         MutableInt correct = new MutableInt();
         // The total amount of incorrect classifications
