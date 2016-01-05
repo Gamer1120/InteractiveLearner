@@ -13,18 +13,21 @@ import java.util.Map;
 public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
 
     /**
-     * Constructs the classifier with default values
+     * Constructs the classifier with the default feature selections and values.
      */
     public MultinomialNaiveBayesClassifier() {
-        super(true, true, true, 0.01d, 0.7d, 10.83d);
-    }
-
-    public MultinomialNaiveBayesClassifier(boolean stopWords, boolean wordCount, boolean chiSquare) {
-        super(stopWords, wordCount, chiSquare, 0.01d, 0.7d, 10.83d);
+        this(true, true, true);
     }
 
     /**
-     * Constructs the classifier with the specified values
+     * Constructs the classifier with the specified feature selections and the default values.
+     */
+    public MultinomialNaiveBayesClassifier(boolean stopWords, boolean wordCount, boolean chiSquare) {
+        this(stopWords, wordCount, chiSquare, 0.01d, 0.7d, 10.83d);
+    }
+
+    /**
+     * Constructs the classifier with the specified feature selections and values.
      */
     public MultinomialNaiveBayesClassifier(boolean stopWords, boolean wordCount, boolean chiSquare,
                                            double minPercent, double maxPercent, double criticalValue) {

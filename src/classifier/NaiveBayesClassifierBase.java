@@ -45,18 +45,21 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
     protected double criticalValue;
 
     /**
-     * Constructs the base with the default values.
+     * Constructs the base with the default feature selections and values.
      */
     public NaiveBayesClassifierBase() {
-        this(false, false, false, 0d, 1d, 0d);
+        this(false, false, false);
     }
 
+    /**
+     * Constructs the base with the specified feature selections and the default values.
+     */
     public NaiveBayesClassifierBase(boolean stopWords, boolean wordCount, boolean chiSquare) {
         this(stopWords, wordCount, chiSquare, 0d, 1d, 0d);
     }
 
     /**
-     * Constructs the base with the specified values.
+     * Constructs the base with the specified feature selections and values.
      */
     public NaiveBayesClassifierBase(boolean stopWords, boolean wordCount, boolean chiSquare,
                                     double minPercent, double maxPercent, double criticalValue) {
