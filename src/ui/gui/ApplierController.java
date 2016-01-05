@@ -184,7 +184,7 @@ public class ApplierController implements Initializable {
     }
 
     private void updateButtons(boolean disable) {
-        deleteButton.setDisable(disable || applier.getDocuments().keySet().size() == 1);
+        deleteButton.setDisable(disable || applier.getDocuments().values().stream().filter(list -> !list.isEmpty()).count() <= 1L);
         trainButton.setDisable(disable);
     }
 
