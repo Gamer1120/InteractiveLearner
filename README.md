@@ -37,5 +37,4 @@ Free Disk Space: 20 MB
 There is no installation required. To run the classifier, see "How do I run the classifier?".
 
 ### How do I run the classifier?
-Go to the build folder, and execute one of the JAR files located there.
-//TODO: Describe which JAR does what
+Go to the build folder, and execute ApplierTUI.jar to open our TUI, ApplierGUI.jar to open our GUI, and BlogTester.jar to test the blogs and print the results
