@@ -1,5 +1,5 @@
-# BayesianClassifier
-This is our Bayesian Classifier. It was made as an assignment for the Artificial Intelligence course. 
+# Interactive Learner
+This is our Interactive Learner. It was made as an assignment for the Artificial Intelligence course. 
 
 ## Running the classifier on the blogs
 Compile all files, and run src/testing/EmailTester.java.
@@ -27,23 +27,15 @@ Of course! If for example you have some jokes, which can be classified as either
 ### What are the minimal system requirements for this classifier?
 It can run on nearly any computer, but for optimal results, please keep the following in mind:
 
-Java: Java 8, refer to java.com/sysreq for the minimal requirements for Java 8
+Java: Java 8, refer to https://www.java.com/sysreq for the minimal requirements for Java 8
 
-CPU: Pentium III/Athlon or better
+RAM: 512 MB
 
-CPU Speed: 1.0 GHz
-
-RAM: 256 MB
-
-OS:	Windows 7 or higher, Mac OSX, Linux or any other OS that supports Java 8.
-
-Sound Card:	No
-
-Free Disk Space: ??? MB (//TODO)
+Free Disk Space: 20 MB
 
 ### How do I install the classifier?
 There is no installation required. To run the classifier, see "How do I run the classifier?".
 
 ### How do I run the classifier?
-Go to ??? (//TODO) and run the ???.jar (//TODO) file.
-
+Go to the build folder, and execute one of the JAR files located there.
+//TODO: Describe which JAR does what
