@@ -18,6 +18,10 @@ public class BinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
         super(true, true, false, 0.01d, 0.6d, 10.83d);
     }
 
+    public BinomialNaiveBayesClassifier(boolean stopWords, boolean wordCount, boolean chiSquare) {
+        super(stopWords, wordCount, chiSquare, 0.01d, 0.6d, 10.83d);
+    }
+
     /**
      * Constructs the classifier with the specified values
      */

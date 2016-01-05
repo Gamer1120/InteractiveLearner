@@ -19,6 +19,10 @@ public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
         super(true, true, true, 0.01d, 0.7d, 10.83d);
     }
 
+    public MultinomialNaiveBayesClassifier(boolean stopWords, boolean wordCount, boolean chiSquare) {
+        super(stopWords, wordCount, chiSquare, 0.01d, 0.7d, 10.83d);
+    }
+
     /**
      * Constructs the classifier with the specified values
      */

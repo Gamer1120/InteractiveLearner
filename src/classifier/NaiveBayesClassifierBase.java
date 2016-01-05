@@ -51,6 +51,10 @@ public abstract class NaiveBayesClassifierBase implements Classifier, Serializab
         this(false, false, false, 0d, 1d, 0d);
     }
 
+    public NaiveBayesClassifierBase(boolean stopWords, boolean wordCount, boolean chiSquare) {
+        this(stopWords, wordCount, chiSquare, 0d, 1d, 0d);
+    }
+
     /**
      * Constructs the base with the specified values.
      */
