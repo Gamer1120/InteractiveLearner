@@ -39,7 +39,7 @@ public class Utils {
     /**
      * Write the applier to the specified location.
      *
-     * @param applier  - the applier
+     * @param applier - the applier
      * @throws IOException
      */
     public static void writeApplier(Applier applier) throws IOException {
