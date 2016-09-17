@@ -95,7 +95,7 @@ public class MultinomialNaiveBayesClassifier extends NaiveBayesClassifierBase {
         vocabulary.forEach((word, wordCategoryCount) -> {
             // Get the map of conditional probabilities for the word
             Map<String, Double> categoryCondProb = condProb.get(word);
-            // Create and add a new map if it doesn't exists
+            // Create and add a new map if it doesn't exist
             if (categoryCondProb == null) {
                 categoryCondProb = new HashMap<>(priorProb.size());
                 condProb.put(word, categoryCondProb);
